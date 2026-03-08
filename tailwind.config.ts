@@ -53,9 +53,17 @@ export default {
           brown: "hsl(var(--minecraft-brown))",
           stone: "hsl(var(--minecraft-stone))",
           gold: "hsl(var(--minecraft-gold))",
+          diamond: "hsl(var(--minecraft-diamond))",
+          redstone: "hsl(var(--minecraft-redstone))",
+          lapis: "hsl(var(--minecraft-lapis))",
+          emerald: "hsl(var(--minecraft-emerald))",
+          obsidian: "hsl(var(--minecraft-obsidian))",
         },
         code: {
           bg: "hsl(var(--code-bg))",
+        },
+        terminal: {
+          green: "hsl(var(--terminal-green))",
         },
         sidebar: {
           DEFAULT: "hsl(var(--sidebar-background))",

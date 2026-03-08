@@ -41,7 +41,13 @@
     --minecraft-brown: 30 50% 25%;
     --minecraft-stone: 0 0% 35%;
     --minecraft-gold: 45 100% 50%;
+    --minecraft-diamond: 195 100% 55%;
+    --minecraft-redstone: 0 100% 45%;
+    --minecraft-lapis: 230 70% 50%;
+    --minecraft-emerald: 140 80% 45%;
+    --minecraft-obsidian: 270 30% 12%;
     --code-bg: 150 15% 8%;
+    --terminal-green: 120 100% 65%;
 
     --sidebar-background: 150 10% 8%;
     --sidebar-foreground: 120 60% 75%;
@@ -65,6 +71,23 @@
   h1, h2, h3 {
     font-family: 'Press Start 2P', cursive;
   }
+  ::selection {
+    background: hsl(var(--primary) / 0.3);
+    color: hsl(var(--minecraft-green));
+  }
+  ::-webkit-scrollbar {
+    width: 8px;
+  }
+  ::-webkit-scrollbar-track {
+    background: hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb {
+    background: hsl(var(--primary) / 0.3);
+    border: 2px solid hsl(var(--background));
+  }
+  ::-webkit-scrollbar-thumb:hover {
+    background: hsl(var(--primary) / 0.6);
+  }
 }
 
 @layer utilities {
@@ -87,12 +110,45 @@
     -3px -3px 0 0 hsl(var(--minecraft-dark-green));
 }
 
+.pixel-border-gold {
+  border: 3px solid hsl(var(--minecraft-gold));
+  box-shadow:
+    3px 3px 0 0 hsl(var(--minecraft-gold) / 0.6),
+    -3px -3px 0 0 hsl(var(--minecraft-gold) / 0.3);
+}
+
+.pixel-border-diamond {
+  border: 3px solid hsl(var(--minecraft-diamond));
+  box-shadow:
+    3px 3px 0 0 hsl(var(--minecraft-diamond) / 0.6),
+    -3px -3px 0 0 hsl(var(--minecraft-diamond) / 0.3);
+}
+
+.pixel-border-redstone {
+  border: 3px solid hsl(var(--minecraft-redstone));
+  box-shadow:
+    3px 3px 0 0 hsl(var(--minecraft-redstone) / 0.6),
+    -3px -3px 0 0 hsl(var(--minecraft-redstone) / 0.3);
+}
+
 /* Glowing text */
 .glow-text {
   text-shadow:
     0 0 10px hsl(var(--primary)),
     0 0 20px hsl(var(--primary) / 0.5),
     0 0 40px hsl(var(--primary) / 0.3);
+}
+
+.glow-text-gold {
+  text-shadow:
+    0 0 10px hsl(var(--minecraft-gold)),
+    0 0 20px hsl(var(--minecraft-gold) / 0.5);
+}
+
+.glow-text-diamond {
+  text-shadow:
+    0 0 10px hsl(var(--minecraft-diamond)),
+    0 0 20px hsl(var(--minecraft-diamond) / 0.5);
 }
 
 /* Scanline overlay */
@@ -104,10 +160,56 @@
     0deg,
     transparent,
     transparent 2px,
-    hsl(0 0% 0% / 0.1) 2px,
-    hsl(0 0% 0% / 0.1) 4px
+    hsl(0 0% 0% / 0.08) 2px,
+    hsl(0 0% 0% / 0.08) 4px
   );
   pointer-events: none;
+}
+
+/* Minecraft dirt texture pattern */
+.dirt-pattern {
+  background-image:
+    radial-gradient(circle at 20% 30%, hsl(30 40% 20%) 1px, transparent 1px),
+    radial-gradient(circle at 60% 70%, hsl(30 35% 18%) 1px, transparent 1px),
+    radial-gradient(circle at 80% 20%, hsl(30 45% 22%) 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+
+/* Minecraft grass top border */
+.grass-top {
+  border-top: 4px solid hsl(var(--minecraft-green));
+  background: linear-gradient(
+    180deg,
+    hsl(var(--minecraft-dark-green) / 0.3) 0%,
+    transparent 20%
+  );
+}
+
+/* Block grid pattern */
+.block-grid {
+  background-image:
+    linear-gradient(hsl(var(--border) / 0.15) 1px, transparent 1px),
+    linear-gradient(90deg, hsl(var(--border) / 0.15) 1px, transparent 1px);
+  background-size: 32px 32px;
+}
+
+/* Enchantment shimmer */
+@keyframes enchant-shimmer {
+  0% { background-position: -200% 0; }
+  100% { background-position: 200% 0; }
+}
+
+.enchant-shimmer {
+  background: linear-gradient(
+    90deg,
+    transparent 0%,
+    hsl(var(--accent) / 0.15) 25%,
+    hsl(var(--minecraft-diamond) / 0.2) 50%,
+    hsl(var(--accent) / 0.15) 75%,
+    transparent 100%
+  );
+  background-size: 200% 100%;
+  animation: enchant-shimmer 3s linear infinite;
 }
 
 /* Terminal cursor blink */
@@ -126,6 +228,12 @@
   50% { transform: translateY(-10px); }
 }
 
+@keyframes float-slow {
+  0%, 100% { transform: translateY(0) rotate(0deg); }
+  33% { transform: translateY(-8px) rotate(2deg); }
+  66% { transform: translateY(-4px) rotate(-1deg); }
+}
+
 @keyframes code-rain {
   0% { transform: translateY(-100%); opacity: 0; }
   10% { opacity: 1; }
@@ -133,9 +241,24 @@
   100% { transform: translateY(100vh); opacity: 0; }
 }
 
-@keyframes typing {
+@keyframes xp-fill {
   from { width: 0; }
-  to { width: 100%; }
+}
+
+@keyframes block-place {
+  0% { transform: scale(0); opacity: 0; }
+  60% { transform: scale(1.1); }
+  100% { transform: scale(1); opacity: 1; }
+}
+
+@keyframes redstone-pulse {
+  0%, 100% { opacity: 0.3; box-shadow: 0 0 5px hsl(var(--minecraft-redstone) / 0.3); }
+  50% { opacity: 1; box-shadow: 0 0 20px hsl(var(--minecraft-redstone) / 0.6); }
+}
+
+@keyframes particle-float {
+  0% { transform: translateY(0) translateX(0) scale(1); opacity: 1; }
+  100% { transform: translateY(-60px) translateX(20px) scale(0); opacity: 0; }
 }
 
 @keyframes fade-in-up {
@@ -143,10 +266,78 @@
   to { opacity: 1; transform: translateY(0); }
 }
 
+@keyframes glitch {
+  0%, 90%, 100% { transform: translate(0); }
+  92% { transform: translate(-2px, 1px); }
+  94% { transform: translate(2px, -1px); }
+  96% { transform: translate(-1px, -1px); }
+  98% { transform: translate(1px, 1px); }
+}
+
 .animate-float {
   animation: float 3s ease-in-out infinite;
 }
 
+.animate-float-slow {
+  animation: float-slow 5s ease-in-out infinite;
+}
+
 .animate-fade-in-up {
   animation: fade-in-up 0.6s ease-out forwards;
+}
+
+.animate-block-place {
+  animation: block-place 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+}
+
+.animate-redstone-pulse {
+  animation: redstone-pulse 2s ease-in-out infinite;
+}
+
+.animate-glitch:hover {
+  animation: glitch 0.3s ease infinite;
+}
+
+/* Inventory slot style */
+.inventory-slot {
+  background: linear-gradient(135deg, hsl(150 8% 18%) 0%, hsl(150 8% 12%) 100%);
+  border: 2px solid hsl(150 8% 22%);
+  box-shadow:
+    inset 2px 2px 0 hsl(150 8% 25%),
+    inset -2px -2px 0 hsl(150 8% 8%);
+}
+
+.inventory-slot:hover {
+  border-color: hsl(var(--primary));
+  box-shadow:
+    inset 2px 2px 0 hsl(150 8% 25%),
+    inset -2px -2px 0 hsl(150 8% 8%),
+    0 0 10px hsl(var(--primary) / 0.3);
+}
+
+/* Hotbar style */
+.hotbar {
+  background: hsl(0 0% 10% / 0.95);
+  border: 3px solid hsl(0 0% 25%);
+  box-shadow:
+    inset 0 0 0 1px hsl(0 0% 15%),
+    0 4px 20px hsl(0 0% 0% / 0.5);
+}
+
+/* Achievement toast style */
+.achievement-banner {
+  background: linear-gradient(90deg, hsl(var(--minecraft-gold) / 0.15), transparent);
+  border-left: 3px solid hsl(var(--minecraft-gold));
+}
+
+/* Section divider blocks */
+.block-divider {
+  display: flex;
+  justify-content: center;
+  gap: 4px;
+}
+.block-divider span {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
 }
