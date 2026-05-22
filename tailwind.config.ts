@@ -1,101 +1,27 @@
 import type { Config } from "tailwindcss";
 
-export default {
-  darkMode: ["class"],
-  content: ["./pages/**/*.{ts,tsx}", "./components/**/*.{ts,tsx}", "./app/**/*.{ts,tsx}", "./src/**/*.{ts,tsx}"],
-  prefix: "",
+const config: Config = {
+  content: ["./src/**/*.{ts,tsx}"],
   theme: {
-    container: {
-      center: true,
-      padding: "2rem",
-      screens: {
-        "2xl": "1400px",
-      },
-    },
     extend: {
       colors: {
-        border: "hsl(var(--border))",
-        input: "hsl(var(--input))",
-        ring: "hsl(var(--ring))",
-        background: "hsl(var(--background))",
-        foreground: "hsl(var(--foreground))",
-        primary: {
-          DEFAULT: "hsl(var(--primary))",
-          foreground: "hsl(var(--primary-foreground))",
-        },
-        secondary: {
-          DEFAULT: "hsl(var(--secondary))",
-          foreground: "hsl(var(--secondary-foreground))",
-        },
-        destructive: {
-          DEFAULT: "hsl(var(--destructive))",
-          foreground: "hsl(var(--destructive-foreground))",
-        },
-        muted: {
-          DEFAULT: "hsl(var(--muted))",
-          foreground: "hsl(var(--muted-foreground))",
-        },
-        accent: {
-          DEFAULT: "hsl(var(--accent))",
-          foreground: "hsl(var(--accent-foreground))",
-        },
-        popover: {
-          DEFAULT: "hsl(var(--popover))",
-          foreground: "hsl(var(--popover-foreground))",
-        },
-        card: {
-          DEFAULT: "hsl(var(--card))",
-          foreground: "hsl(var(--card-foreground))",
-        },
-        minecraft: {
-          green: "hsl(var(--minecraft-green))",
-          "dark-green": "hsl(var(--minecraft-dark-green))",
-          brown: "hsl(var(--minecraft-brown))",
-          stone: "hsl(var(--minecraft-stone))",
-          gold: "hsl(var(--minecraft-gold))",
-          diamond: "hsl(var(--minecraft-diamond))",
-          redstone: "hsl(var(--minecraft-redstone))",
-          lapis: "hsl(var(--minecraft-lapis))",
-          emerald: "hsl(var(--minecraft-emerald))",
-          obsidian: "hsl(var(--minecraft-obsidian))",
-        },
-        code: {
-          bg: "hsl(var(--code-bg))",
-        },
-        terminal: {
-          green: "hsl(var(--terminal-green))",
-        },
-        sidebar: {
-          DEFAULT: "hsl(var(--sidebar-background))",
-          foreground: "hsl(var(--sidebar-foreground))",
-          primary: "hsl(var(--sidebar-primary))",
-          "primary-foreground": "hsl(var(--sidebar-primary-foreground))",
-          accent: "hsl(var(--sidebar-accent))",
-          "accent-foreground": "hsl(var(--sidebar-accent-foreground))",
-          border: "hsl(var(--sidebar-border))",
-          ring: "hsl(var(--sidebar-ring))",
-        },
+        void: "#05070d",
+        ink: "#090d18",
+        panel: "rgba(12, 18, 32, 0.72)",
+        cyan: "#28e7ff",
+        electric: "#4f7dff",
+        violet: "#8b5cf6"
       },
-      borderRadius: {
-        lg: "var(--radius)",
-        md: "calc(var(--radius) - 2px)",
-        sm: "calc(var(--radius) - 4px)",
+      boxShadow: {
+        glow: "0 0 50px rgba(40, 231, 255, 0.18)",
+        violet: "0 0 60px rgba(139, 92, 246, 0.2)"
       },
-      keyframes: {
-        "accordion-down": {
-          from: { height: "0" },
-          to: { height: "var(--radix-accordion-content-height)" },
-        },
-        "accordion-up": {
-          from: { height: "var(--radix-accordion-content-height)" },
-          to: { height: "0" },
-        },
-      },
-      animation: {
-        "accordion-down": "accordion-down 0.2s ease-out",
-        "accordion-up": "accordion-up 0.2s ease-out",
-      },
-    },
+      backgroundImage: {
+        "radial-core": "radial-gradient(circle at top, rgba(40, 231, 255, 0.16), transparent 34%), radial-gradient(circle at 75% 15%, rgba(139, 92, 246, 0.16), transparent 32%)"
+      }
+    }
   },
-  plugins: [require("tailwindcss-animate")],
-} satisfies Config;
+  plugins: []
+};
+
+export default config;

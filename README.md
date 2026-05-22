@@ -1,73 +1,92 @@
-# Welcome to your Lovable project
+# FighterPlayz Ecosystem
 
-## Project info
+Premium Next.js revamp of `fighterplays.com` for a Minecraft infrastructure developer, plugin studio, web systems builder, and gaming technology ecosystem.
 
-**URL**: https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID
+## Features
 
-## How can I edit this code?
+- Cinematic dark cyber-infrastructure public website
+- App Router, TypeScript, Tailwind CSS, Framer Motion
+- Prisma ORM with PostgreSQL schema and seed data
+- Auth.js credential admin login with hashed passwords
+- Admin command center for projects, plugins, skills, services, testimonials, blog posts, messages, settings, uploads, featured toggles, search, and delete
+- Zod-validated contact form saved to the database
+- Plugin and project detail pages with commands, permissions, config preview, changelog, installation guide, tech stack, and outcomes
+- SEO metadata, Open Graph asset, sitemap, robots, 404, error boundary, responsive navigation, toast notifications, lazy-friendly layout
 
-There are several ways of editing your application.
+## Setup
 
-**Use Lovable**
-
-Simply visit the [Lovable Project](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and start prompting.
-
-Changes made via Lovable will be committed automatically to this repo.
-
-**Use your preferred IDE**
-
-If you want to work locally using your own IDE, you can clone this repo and push changes. Pushed changes will also be reflected in Lovable.
-
-The only requirement is having Node.js & npm installed - [install with nvm](https://github.com/nvm-sh/nvm#installing-and-updating)
-
-Follow these steps:
-
-```sh
-# Step 1: Clone the repository using the project's Git URL.
-git clone <YOUR_GIT_URL>
-
-# Step 2: Navigate to the project directory.
-cd <YOUR_PROJECT_NAME>
-
-# Step 3: Install the necessary dependencies.
-npm i
-
-# Step 4: Start the development server with auto-reloading and an instant preview.
+```bash
+npm install
+cp .env.example .env
+npx prisma generate
+npx prisma migrate dev
+npm run prisma:seed
 npm run dev
 ```
 
-**Edit a file directly in GitHub**
+## Environment Variables
 
-- Navigate to the desired file(s).
-- Click the "Edit" button (pencil icon) at the top right of the file view.
-- Make your changes and commit the changes.
+```env
+DATABASE_URL="postgresql://USER:PASSWORD@HOST:PORT/DATABASE"
+NEXTAUTH_SECRET="knJN2wPQJD37fTlHM0TyD3dib2f_Y5oQgMxZS8Tuc8Q"
+NEXTAUTH_URL="http://localhost:3000"
+ADMIN_EMAIL="admin@fighterplays.com"
+ADMIN_PASSWORD="tn2Lco3zYwJSak2L"
+UPLOAD_PROVIDER="local"
+BLOB_READ_WRITE_TOKEN=""
+EMAIL_HOST=""
+EMAIL_USER=""
+EMAIL_PASS=""
+```
 
-**Use GitHub Codespaces**
+Ready-to-paste examples are included in `.env.local.example` and `.env.vercel.example`.
 
-- Navigate to the main page of your repository.
-- Click on the "Code" button (green button) near the top right.
-- Select the "Codespaces" tab.
-- Click on "New codespace" to launch a new Codespace environment.
-- Edit files directly within the Codespace and commit and push your changes once you're done.
+For Vercel, create a PostgreSQL database through Vercel Storage, Neon, Supabase, Railway, or another hosted PostgreSQL provider, then paste its connection string into `DATABASE_URL`. A local PostgreSQL URL from a PC will not work on Vercel because Vercel cannot connect to `localhost` on your computer.
 
-## What technologies are used for this project?
+## Database
 
-This project is built with:
+The Prisma schema is in `prisma/schema.prisma` and includes `User`, `Project`, `Plugin`, `Skill`, `Experience`, `Service`, `Testimonial`, `BlogPost`, `ContactMessage`, and `SiteSetting`.
 
-- Vite
-- TypeScript
-- React
-- shadcn-ui
-- Tailwind CSS
+Seed data includes Java, Python, HTML, CSS, JavaScript, TypeScript, C++, Minecraft Plugin Development, Paper/Spigot/Pufferfish, Velocity Proxy, Pterodactyl, Docker, PostgreSQL, MySQL, Prisma, Node.js, Next.js, Tailwind CSS, plus OGxDevs, OGxNodes, ArctixMC Systems, KitHub, Minecraft Optimization Systems, Custom Server GUIs, Discord Bot Systems, and the requested plugin concepts.
 
-## How can I deploy this project?
+## Admin Login
 
-Simply open [Lovable](https://lovable.dev/projects/REPLACE_WITH_PROJECT_ID) and click on Share -> Publish.
+Set `ADMIN_EMAIL` and `ADMIN_PASSWORD`, run `npm run prisma:seed`, then visit `/admin/login`.
 
-## Can I connect a custom domain to my Lovable project?
+## Build
 
-Yes, you can!
+```bash
+npm run build
+npm run start
+```
 
-To connect a domain, navigate to Project > Settings > Domains and click Connect Domain.
+## Deployment
 
-Read more here: [Setting up a custom domain](https://docs.lovable.dev/features/custom-domain#custom-domain)
+1. Provision PostgreSQL.
+2. Set all environment variables in the hosting platform.
+3. Run Prisma migrations during deploy.
+4. For admin image uploads on Vercel, enable Vercel Blob and set `BLOB_READ_WRITE_TOKEN`.
+5. Run the seed command once for the first admin and starter content.
+6. Deploy with a Node-compatible Next.js host such as Vercel, Railway, Render, or a VPS.
+
+## Folder Structure
+
+```text
+src/app                 App Router pages, API routes, metadata routes
+src/components          Public, UI, and admin components
+src/components/ui       Shared primitives
+src/components/sections Public site sections
+src/components/admin    Admin command center components
+src/lib                 Auth, Prisma, validators, utilities, fallback data
+src/server              Data access helpers
+src/prisma              Reserved project Prisma helpers
+src/types               Type augmentation
+src/hooks               Reserved reusable hooks
+src/styles              Global styles
+prisma                  Schema and seed script
+public                  OG image and uploads
+```
+
+## Notes
+
+The public site uses database data when PostgreSQL is available and starter fallback data during early local development. Admin CRUD requires a configured database.

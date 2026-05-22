@@ -1,0 +1,19 @@
+<svg width="1200" height="630" viewBox="0 0 1200 630" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <rect width="1200" height="630" fill="#05070D"/>
+  <path d="M0 0h1200v630H0z" fill="url(#a)"/>
+  <path d="M130 140h940v350H130z" fill="#0B1220" stroke="#28E7FF" stroke-opacity=".28"/>
+  <path d="M178 188h250v22H178zM178 236h620v18H178zM178 274h500v18H178z" fill="#EAFBFF"/>
+  <path d="M178 345h170v46H178z" fill="#28E7FF"/>
+  <path d="M380 345h170v46H380z" fill="#111C33" stroke="#8B5CF6" stroke-opacity=".8"/>
+  <circle cx="925" cy="270" r="105" fill="#28E7FF" fill-opacity=".12" stroke="#28E7FF" stroke-opacity=".5"/>
+  <circle cx="925" cy="270" r="48" fill="#8B5CF6" fill-opacity=".22"/>
+  <text x="178" y="158" fill="#28E7FF" font-size="24" font-family="Arial" font-weight="700">FIGHTERPLAYZ ECOSYSTEM</text>
+  <text x="178" y="330" fill="#91F4FF" font-size="28" font-family="Arial">Minecraft Infrastructure • Plugins • Web Systems</text>
+  <defs>
+    <radialGradient id="a" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(756 86) rotate(123) scale(690 900)">
+      <stop stop-color="#224CFF" stop-opacity=".35"/>
+      <stop offset=".45" stop-color="#8B5CF6" stop-opacity=".18"/>
+      <stop offset="1" stop-color="#05070D" stop-opacity="0"/>
+    </radialGradient>
+  </defs>
+</svg>
