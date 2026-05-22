@@ -1,5 +1,5 @@
 {
-  "buildCommand": "npm run build",
+  "buildCommand": "DATABASE_URL=${DATABASE_URL:-postgresql://postgres:postgres@localhost:5432/fighterplayz_ecosystem} npm run build",
   "installCommand": "npm install --legacy-peer-deps",
   "framework": "nextjs"
 }
