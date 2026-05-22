@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { resourceMap, type ResourceName } from "@/lib/admin-resources";
 
@@ -9,6 +10,8 @@ function repo(resource: string) {
 }
 
 export async function GET(_: Request, { params }: { params: Promise<{ resource: string }> }) {
+  const session = await auth();
+  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { resource } = await params;
   const item = repo(resource);
   if (!item) return NextResponse.json({ error: "Unknown resource" }, { status: 404 });
@@ -17,6 +20,8 @@ export async function GET(_: Request, { params }: { params: Promise<{ resource: 
 }
 
 export async function POST(request: Request, { params }: { params: Promise<{ resource: string }> }) {
+  const session = await auth();
+  if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { resource } = await params;
   const item = repo(resource);
   if (!item) return NextResponse.json({ error: "Unknown resource" }, { status: 404 });
