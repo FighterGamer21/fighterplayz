@@ -10,6 +10,8 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WebsitesRouteImport } from './routes/websites'
+import { Route as ReviewsRouteImport } from './routes/reviews'
+import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ServersRouteImport } from './routes/servers'
@@ -31,10 +33,22 @@ import { Route as AdminPluginsRouteImport } from './routes/admin.plugins'
 import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
+import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
+import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
 
 const WebsitesRoute = WebsitesRouteImport.update({
   id: '/websites',
   path: '/websites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnouncementsRoute = AnnouncementsRouteImport.update({
+  id: '/announcements',
+  path: '/announcements',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -140,6 +154,16 @@ const AdminLoginRoute = AdminLoginRouteImport.update({
 const AdminBlogRoute = AdminBlogRouteImport.update({
   id: '/admin/blog',
   path: '/admin/blog',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminReviewsRoute = AdminReviewsRouteImport.update({
+  id: '/admin/reviews',
+  path: '/admin/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
+  id: '/admin/announcements',
+  path: '/admin/announcements',
   getParentRoute: () => rootRouteImport,
 } as any)
 
@@ -302,7 +326,11 @@ export interface RootRouteChildren {
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
   WebsitesRoute: typeof WebsitesRoute
+  ReviewsRoute: typeof ReviewsRoute
+  AnnouncementsRoute: typeof AnnouncementsRoute
   AdminBlogRoute: typeof AdminBlogRoute
+  AdminReviewsRoute: typeof AdminReviewsRoute
+  AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
   AdminPluginsRoute: typeof AdminPluginsRoute
@@ -507,7 +535,11 @@ const rootRouteChildren: RootRouteChildren = {
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
   WebsitesRoute: WebsitesRoute,
+  ReviewsRoute: ReviewsRoute,
+  AnnouncementsRoute: AnnouncementsRoute,
   AdminBlogRoute: AdminBlogRoute,
+  AdminReviewsRoute: AdminReviewsRoute,
+  AdminAnnouncementsRoute: AdminAnnouncementsRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminMessagesRoute: AdminMessagesRoute,
   AdminPluginsRoute: AdminPluginsRoute,
