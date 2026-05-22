@@ -4,7 +4,7 @@ import { useMemo, useState } from "react";
 import { toast } from "sonner";
 import { Button } from "@/components/ui/button";
 
-type Row = Record<string, any> & { id: string };
+type Row = Record<string, unknown> & { id: string };
 
 export function ResourceManager({ resource, initialRows, fields }: { resource: string; initialRows: Row[]; fields: string[] }) {
   const [rows, setRows] = useState(initialRows);
@@ -24,7 +24,7 @@ export function ResourceManager({ resource, initialRows, fields }: { resource: s
     }
     const res = await fetch(`/api/admin/${resource}`, { method: "POST", headers: { "Content-Type": "application/json" }, body: JSON.stringify(body) });
     if (!res.ok) return toast.error("Create failed. Check required fields and JSON shape.");
-    const row = await res.json();
+    const row = (await res.json()) as Row;
     setRows((current) => [row, ...current]);
     toast.success("Item created.");
   }
@@ -32,7 +32,7 @@ export function ResourceManager({ resource, initialRows, fields }: { resource: s
   async function toggle(id: string, key: string, value: boolean) {
     const res = await fetch(`/api/admin/${resource}/${id}`, { method: "PATCH", headers: { "Content-Type": "application/json" }, body: JSON.stringify({ [key]: !value }) });
     if (!res.ok) return toast.error("Update failed.");
-    const row = await res.json();
+    const row = (await res.json()) as Row;
     setRows((current) => current.map((item) => (item.id === id ? row : item)));
     toast.success("Status updated.");
   }

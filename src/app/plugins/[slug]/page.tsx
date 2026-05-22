@@ -15,9 +15,9 @@ export default async function PluginDetailsPage({ params }: { params: Promise<{ 
   const { slug } = await params;
   const plugin = await getPluginBySlug(slug);
   if (!plugin) notFound();
-  const commands = Array.isArray(plugin.commands) ? plugin.commands : [];
-  const permissions = Array.isArray(plugin.permissions) ? plugin.permissions : [];
-  const changelog = Array.isArray(plugin.changelog) ? plugin.changelog : [];
+  const commands = Array.isArray(plugin.commands) ? (plugin.commands as Array<Record<string, string>>) : [];
+  const permissions = Array.isArray(plugin.permissions) ? (plugin.permissions as Array<Record<string, string>>) : [];
+  const changelog = Array.isArray(plugin.changelog) ? (plugin.changelog as Array<Record<string, string>>) : [];
 
   return (
     <main>
@@ -32,7 +32,7 @@ export default async function PluginDetailsPage({ params }: { params: Promise<{ 
             <Panel title="Screenshots / gallery"><div className="grid gap-3 sm:grid-cols-2">{plugin.gallery.map((src: string) => <img key={src} src={src} alt={`${plugin.name} screenshot`} className="aspect-video w-full rounded-lg border border-white/10 object-cover" />)}</div></Panel>
             <Panel title="Config preview"><pre className="overflow-x-auto rounded-lg bg-black/40 p-4 font-mono text-sm text-cyan">{plugin.configExample}</pre></Panel>
             <Panel title="Installation guide"><ol className="space-y-2 text-slate-300"><li>1. Download the latest plugin jar.</li><li>2. Drop it into your Paper server plugins folder.</li><li>3. Restart, edit config, then run a permission pass.</li></ol></Panel>
-            <Panel title="Changelog"><ul className="space-y-2 text-slate-300">{changelog.map((item: any) => <li key={item.version}><strong className="text-white">{item.version}</strong> - {item.notes}</li>)}</ul></Panel>
+            <Panel title="Changelog"><ul className="space-y-2 text-slate-300">{changelog.map((item) => <li key={item.version}><strong className="text-white">{item.version}</strong> - {item.notes}</li>)}</ul></Panel>
             <Panel title="FAQ"><p className="text-slate-300">Built for Paper-first servers. Database, economy, and proxy behavior can be adapted per project requirements.</p></Panel>
           </div>
           <aside className="glass h-fit rounded-xl p-6">
@@ -52,6 +52,6 @@ function Panel({ title, children }: { title: string; children: React.ReactNode }
   return <section className="glass rounded-xl p-6"><h2 className="mb-4 text-2xl font-black text-white">{title}</h2>{children}</section>;
 }
 
-function DataTable({ rows, first, second }: { rows: any[]; first: string; second: string }) {
+function DataTable({ rows, first, second }: { rows: Array<Record<string, string>>; first: string; second: string }) {
   return <div className="overflow-hidden rounded-lg border border-white/10">{rows.map((row) => <div key={row[first]} className="grid gap-2 border-b border-white/10 p-3 text-sm last:border-0 sm:grid-cols-[0.7fr_1fr]"><code className="text-cyan">{row[first]}</code><span className="text-slate-300">{row[second]}</span></div>)}</div>;
 }

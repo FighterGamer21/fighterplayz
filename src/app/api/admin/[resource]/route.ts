@@ -1,13 +1,13 @@
 import { NextResponse } from "next/server";
 import { auth } from "@/lib/auth";
-import { prisma } from "@/lib/prisma";
 import { resourceMap, type ResourceName } from "@/lib/admin-resources";
 
 export const dynamic = "force-dynamic";
 
-function repo(resource: string) {
+async function repo(resource: string) {
   const config = resourceMap[resource as ResourceName];
   if (!config) return null;
+  const { prisma } = await import("@/lib/prisma");
   return { config, model: (prisma as any)[config.model] };
 }
 
@@ -15,7 +15,7 @@ export async function GET(_: Request, { params }: { params: Promise<{ resource: 
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { resource } = await params;
-  const item = repo(resource);
+  const item = await repo(resource);
   if (!item) return NextResponse.json({ error: "Unknown resource" }, { status: 404 });
   const data = await item.model.findMany({ orderBy: { id: "desc" } }).catch(() => item.model.findMany());
   return NextResponse.json(data);
@@ -25,7 +25,7 @@ export async function POST(request: Request, { params }: { params: Promise<{ res
   const session = await auth();
   if (!session?.user) return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
   const { resource } = await params;
-  const item = repo(resource);
+  const item = await repo(resource);
   if (!item) return NextResponse.json({ error: "Unknown resource" }, { status: 404 });
   const parsed = item.config.schema.safeParse(await request.json());
   if (!parsed.success) return NextResponse.json({ error: parsed.error.flatten() }, { status: 400 });
