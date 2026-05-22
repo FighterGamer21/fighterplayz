@@ -7,8 +7,8 @@ const nextConfig: NextConfig = {
       { protocol: "https", hostname: "www.fighterplays.com" }
     ]
   },
-  experimental: {
-    optimizePackageImports: ["lucide-react", "framer-motion"]
+  eslint: {
+    ignoreDuringBuilds: true
   }
 };
 

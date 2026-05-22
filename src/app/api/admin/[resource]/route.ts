@@ -3,6 +3,8 @@ import { auth } from "@/lib/auth";
 import { prisma } from "@/lib/prisma";
 import { resourceMap, type ResourceName } from "@/lib/admin-resources";
 
+export const dynamic = "force-dynamic";
+
 function repo(resource: string) {
   const config = resourceMap[resource as ResourceName];
   if (!config) return null;
