@@ -10,13 +10,13 @@ export function Hero() {
       <div className="mx-auto grid max-w-7xl items-center gap-12 lg:grid-cols-[1.05fr_0.95fr]">
         <div>
           <motion.p initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} className="mb-5 text-xs font-bold uppercase tracking-[0.25em] text-cyan">
-            @fightergamerofficial1 • OGxDevs signal online
+            @fightergamerofficial1 - OGxDevs signal online
           </motion.p>
           <motion.h1 initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.08 }} className="text-balance text-5xl font-black leading-[0.96] tracking-tight text-white sm:text-6xl lg:text-7xl">
             Building Minecraft Infrastructure <span className="text-gradient">Beyond Ordinary Networks</span>
           </motion.h1>
           <motion.p initial={{ opacity: 0, y: 20 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.16 }} className="mt-6 max-w-2xl text-lg leading-8 text-slate-300">
-            Plugin Development • Server Optimization • Web Systems • Gaming Infrastructure
+            Plugin Development - Server Optimization - Web Systems - Gaming Infrastructure
           </motion.p>
           <motion.div initial={{ opacity: 0, y: 16 }} animate={{ opacity: 1, y: 0 }} transition={{ delay: 0.24 }} className="mt-8 flex flex-wrap gap-3">
             <Button href="/ecosystem">Explore Ecosystem <ArrowRight size={17} /></Button>
@@ -27,11 +27,11 @@ export function Hero() {
         <motion.div initial={{ opacity: 0, scale: 0.96 }} animate={{ opacity: 1, scale: 1 }} transition={{ delay: 0.2 }} className="glass scanline relative min-h-[420px] overflow-hidden rounded-2xl p-5">
           <div className="absolute inset-0 bg-radial-core opacity-70" />
           <div className="relative grid h-full gap-4">
-            {[
+            {([
               ["Velocity Proxy", "Latency routing stable", Server],
               ["Plugin Core", "Commands compiled", Code2],
               ["PostgreSQL", "Content sync active", DatabaseZap]
-            ].map(([title, text, Icon], index) => (
+            ] as const).map(([title, text, Icon], index) => (
               <motion.div key={String(title)} animate={{ y: [0, -8, 0] }} transition={{ duration: 5 + index, repeat: Infinity }} className="glass rounded-xl p-5">
                 <div className="mb-4 flex items-center justify-between">
                   <div className="grid size-11 place-items-center rounded-lg bg-cyan/10 text-cyan"><Icon size={21} /></div>

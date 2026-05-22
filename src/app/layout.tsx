@@ -30,7 +30,7 @@ export const metadata: Metadata = {
     card: "summary_large_image",
     creator: "@fightergamerofficial1",
     title: "FighterPlayz Ecosystem",
-    description: "Plugin Development • Server Optimization • Web Systems • Gaming Infrastructure",
+    description: "Plugin Development - Server Optimization - Web Systems - Gaming Infrastructure",
     images: ["/og/fighterplayz-og.svg"]
   }
 };

@@ -11,7 +11,7 @@ const links = [
   ["Blog", "/admin/dashboard/blog", Package],
   ["Messages", "/admin/dashboard/messages", MessageSquare],
   ["Settings", "/admin/dashboard/settings", Settings]
-];
+] as const;
 
 export function AdminShell({ children }: { children: React.ReactNode }) {
   return (

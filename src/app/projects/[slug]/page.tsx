@@ -26,7 +26,7 @@ export default async function ProjectDetailsPage({ params }: { params: Promise<{
             <h2 className="text-2xl font-black text-white">Problem solved</h2>
             <p className="mt-3 leading-7 text-slate-300">{project.problemSolved}</p>
             <h2 className="mt-8 text-2xl font-black text-white">Features</h2>
-            <ul className="mt-3 space-y-2 text-slate-300">{project.features.map((feature: string) => <li key={feature}>• {feature}</li>)}</ul>
+            <ul className="mt-3 space-y-2 text-slate-300">{project.features.map((feature: string) => <li key={feature}>- {feature}</li>)}</ul>
             <h2 className="mt-8 text-2xl font-black text-white">Development notes</h2>
             <p className="mt-3 leading-7 text-slate-300">{project.developmentNotes}</p>
             <h2 className="mt-8 text-2xl font-black text-white">Result</h2>

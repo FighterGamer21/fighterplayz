@@ -15,7 +15,7 @@ const process = [
   ["Optimize", Gauge],
   ["Deploy", CloudCog],
   ["Maintain", Headset]
-];
+] as const;
 
 export default async function HomePage() {
   const [plugins, projects, skills, services, testimonials] = await Promise.all([
@@ -73,7 +73,7 @@ export default async function HomePage() {
       <Section>
         <Reveal>
           <SectionHeading eyebrow="Services" title="Infrastructure-grade help for networks, plugins, panels, and community systems." />
-          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">{services.map((service) => <div key={service.id} className="glass rounded-xl p-5"><h3 className="text-xl font-black text-white">{service.title}</h3><p className="mt-2 text-sm leading-6 text-slate-400">{service.description}</p><ul className="mt-4 space-y-2 text-sm text-slate-300">{service.features.slice(0, 3).map((f: string) => <li key={f}>• {f}</li>)}</ul></div>)}</div>
+          <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">{services.map((service) => <div key={service.id} className="glass rounded-xl p-5"><h3 className="text-xl font-black text-white">{service.title}</h3><p className="mt-2 text-sm leading-6 text-slate-400">{service.description}</p><ul className="mt-4 space-y-2 text-sm text-slate-300">{service.features.slice(0, 3).map((f: string) => <li key={f}>- {f}</li>)}</ul></div>)}</div>
         </Reveal>
       </Section>
       <Section>
@@ -87,7 +87,7 @@ export default async function HomePage() {
       <Section>
         <Reveal>
           <SectionHeading eyebrow="Testimonials" title="Signals from server owners and build collaborators." />
-          <div className="grid gap-5 md:grid-cols-2">{testimonials.map((item) => <blockquote key={item.id} className="glass rounded-xl p-6"><p className="text-lg leading-8 text-slate-200">“{item.message}”</p><footer className="mt-5 text-sm text-slate-400"><strong className="text-white">{item.name}</strong> • {item.role}</footer></blockquote>)}</div>
+          <div className="grid gap-5 md:grid-cols-2">{testimonials.map((item) => <blockquote key={item.id} className="glass rounded-xl p-6"><p className="text-lg leading-8 text-slate-200">&quot;{item.message}&quot;</p><footer className="mt-5 text-sm text-slate-400"><strong className="text-white">{item.name}</strong> - {item.role}</footer></blockquote>)}</div>
         </Reveal>
       </Section>
       <Section className="pb-24">
