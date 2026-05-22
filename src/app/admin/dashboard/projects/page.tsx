@@ -1,6 +1,8 @@
 import { ResourceManager } from "@/components/admin/resource-manager";
 import { getProjects } from "@/server/data";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminProjectsPage() {
   const rows = await getProjects();
   return <AdminPage title="Manage Projects"><ResourceManager resource="projects" initialRows={rows as any[]} fields={["title", "category", "status", "featured", "sortOrder"]} /></AdminPage>;
