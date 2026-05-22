@@ -2,7 +2,7 @@ export const dynamic = "force-dynamic";
 
 export default async function AdminMessagesPage() {
   const messages = process.env.DATABASE_URL && !process.env.DATABASE_URL.includes("localhost")
-    ? await import("@/lib/prisma").then(({ prisma }) => prisma.contactMessage.findMany({ orderBy: { createdAt: "desc" } })).catch(() => [])
+    ? await import("@/lib/prisma").then(async ({ getPrisma }) => (await getPrisma()).contactMessage.findMany({ orderBy: { createdAt: "desc" } })).catch(() => [])
     : [];
   return (
     <div>

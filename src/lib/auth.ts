@@ -12,7 +12,8 @@ export const authConfig = {
       async authorize(credentials) {
         const parsed = adminLoginSchema.safeParse(credentials);
         if (!parsed.success) return null;
-        const { prisma } = await import("@/lib/prisma");
+        const { getPrisma } = await import("@/lib/prisma");
+        const prisma = await getPrisma();
         const user = await prisma.user.findUnique({ where: { email: parsed.data.email } });
         if (!user) return null;
         const ok = await bcrypt.compare(parsed.data.password, user.passwordHash);

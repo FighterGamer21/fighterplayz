@@ -7,7 +7,8 @@ export const dynamic = "force-dynamic";
 async function repo(resource: string) {
   const config = resourceMap[resource as ResourceName];
   if (!config) return null;
-  const { prisma } = await import("@/lib/prisma");
+  const { getPrisma } = await import("@/lib/prisma");
+  const prisma = await getPrisma();
   return { config, model: (prisma as any)[config.model] };
 }
 

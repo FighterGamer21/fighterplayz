@@ -11,27 +11,28 @@ async function safe<T>(query: Promise<T>, fallback: unknown): Promise<any> {
 }
 
 export const getFeaturedPlugins = () =>
-  hasDatabase ? import("@/lib/prisma").then(({ prisma }) => safe(prisma.plugin.findMany({ where: { featured: true }, orderBy: { createdAt: "desc" }, take: 6 }), fallbackPlugins.filter((p) => p.featured))) : fallbackPlugins.filter((p) => p.featured);
+  hasDatabase ? import("@/lib/prisma").then(async ({ getPrisma }) => safe((await getPrisma()).plugin.findMany({ where: { featured: true }, orderBy: { createdAt: "desc" }, take: 6 }), fallbackPlugins.filter((p) => p.featured))) : fallbackPlugins.filter((p) => p.featured);
 
-export const getPlugins = () => hasDatabase ? import("@/lib/prisma").then(({ prisma }) => safe(prisma.plugin.findMany({ orderBy: { createdAt: "desc" } }), fallbackPlugins)) : fallbackPlugins;
-export const getPluginBySlug = (slug: string) => hasDatabase ? import("@/lib/prisma").then(({ prisma }) => safe(prisma.plugin.findUnique({ where: { slug } }), fallbackPlugins.find((p) => p.slug === slug) ?? null)) : fallbackPlugins.find((p) => p.slug === slug) ?? null;
+export const getPlugins = () => hasDatabase ? import("@/lib/prisma").then(async ({ getPrisma }) => safe((await getPrisma()).plugin.findMany({ orderBy: { createdAt: "desc" } }), fallbackPlugins)) : fallbackPlugins;
+export const getPluginBySlug = (slug: string) => hasDatabase ? import("@/lib/prisma").then(async ({ getPrisma }) => safe((await getPrisma()).plugin.findUnique({ where: { slug } }), fallbackPlugins.find((p) => p.slug === slug) ?? null)) : fallbackPlugins.find((p) => p.slug === slug) ?? null;
 
 export const getFeaturedProjects = () =>
-  hasDatabase ? import("@/lib/prisma").then(({ prisma }) => safe(prisma.project.findMany({ where: { featured: true }, orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }] }), fallbackProjects.filter((p) => p.featured))) : fallbackProjects.filter((p) => p.featured);
+  hasDatabase ? import("@/lib/prisma").then(async ({ getPrisma }) => safe((await getPrisma()).project.findMany({ where: { featured: true }, orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }] }), fallbackProjects.filter((p) => p.featured))) : fallbackProjects.filter((p) => p.featured);
 
-export const getProjects = () => hasDatabase ? import("@/lib/prisma").then(({ prisma }) => safe(prisma.project.findMany({ orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }] }), fallbackProjects)) : fallbackProjects;
-export const getProjectBySlug = (slug: string) => hasDatabase ? import("@/lib/prisma").then(({ prisma }) => safe(prisma.project.findUnique({ where: { slug } }), fallbackProjects.find((p) => p.slug === slug) ?? null)) : fallbackProjects.find((p) => p.slug === slug) ?? null;
-export const getSkills = () => hasDatabase ? import("@/lib/prisma").then(({ prisma }) => safe(prisma.skill.findMany({ orderBy: { sortOrder: "asc" } }), fallbackSkills)) : fallbackSkills;
-export const getServices = () => hasDatabase ? import("@/lib/prisma").then(({ prisma }) => safe(prisma.service.findMany({ where: { active: true } }), fallbackServices)) : fallbackServices;
-export const getTestimonials = () => hasDatabase ? import("@/lib/prisma").then(({ prisma }) => safe(prisma.testimonial.findMany({ where: { approved: true } }), fallbackTestimonials)) : fallbackTestimonials;
-export const getPosts = () => hasDatabase ? import("@/lib/prisma").then(({ prisma }) => safe(prisma.blogPost.findMany({ where: { published: true }, orderBy: { createdAt: "desc" } }), fallbackPosts)) : fallbackPosts;
-export const getPostBySlug = (slug: string) => hasDatabase ? import("@/lib/prisma").then(({ prisma }) => safe(prisma.blogPost.findUnique({ where: { slug } }), fallbackPosts.find((p) => p.slug === slug) ?? null)) : fallbackPosts.find((p) => p.slug === slug) ?? null;
+export const getProjects = () => hasDatabase ? import("@/lib/prisma").then(async ({ getPrisma }) => safe((await getPrisma()).project.findMany({ orderBy: [{ sortOrder: "asc" }, { createdAt: "desc" }] }), fallbackProjects)) : fallbackProjects;
+export const getProjectBySlug = (slug: string) => hasDatabase ? import("@/lib/prisma").then(async ({ getPrisma }) => safe((await getPrisma()).project.findUnique({ where: { slug } }), fallbackProjects.find((p) => p.slug === slug) ?? null)) : fallbackProjects.find((p) => p.slug === slug) ?? null;
+export const getSkills = () => hasDatabase ? import("@/lib/prisma").then(async ({ getPrisma }) => safe((await getPrisma()).skill.findMany({ orderBy: { sortOrder: "asc" } }), fallbackSkills)) : fallbackSkills;
+export const getServices = () => hasDatabase ? import("@/lib/prisma").then(async ({ getPrisma }) => safe((await getPrisma()).service.findMany({ where: { active: true } }), fallbackServices)) : fallbackServices;
+export const getTestimonials = () => hasDatabase ? import("@/lib/prisma").then(async ({ getPrisma }) => safe((await getPrisma()).testimonial.findMany({ where: { approved: true } }), fallbackTestimonials)) : fallbackTestimonials;
+export const getPosts = () => hasDatabase ? import("@/lib/prisma").then(async ({ getPrisma }) => safe((await getPrisma()).blogPost.findMany({ where: { published: true }, orderBy: { createdAt: "desc" } }), fallbackPosts)) : fallbackPosts;
+export const getPostBySlug = (slug: string) => hasDatabase ? import("@/lib/prisma").then(async ({ getPrisma }) => safe((await getPrisma()).blogPost.findUnique({ where: { slug } }), fallbackPosts.find((p) => p.slug === slug) ?? null)) : fallbackPosts.find((p) => p.slug === slug) ?? null;
 
 export async function getDashboardCounts() {
   if (!hasDatabase) {
     return { projects: fallbackProjects.length, plugins: fallbackPlugins.length, skills: fallbackSkills.length, services: fallbackServices.length, messages: 0, posts: fallbackPosts.length };
   }
-  const { prisma } = await import("@/lib/prisma");
+  const { getPrisma } = await import("@/lib/prisma");
+  const prisma = await getPrisma();
   return safe(
     Promise.all([
       prisma.project.count(),
