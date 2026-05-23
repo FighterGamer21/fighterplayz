@@ -4,7 +4,6 @@ import { cn } from "@/lib/utils";
 
 const NAV = [
   { to: "/", label: "Home" },
-  { to: "/ecosystem", label: "Ecosystem" },
   { to: "/about", label: "About" },
   { to: "/plugins", label: "Plugins" },
   { to: "/projects", label: "Projects" },
@@ -14,7 +13,6 @@ const NAV = [
   { to: "/announcements", label: "Updates" },
   { to: "/reviews", label: "Reviews" },
   { to: "/hire", label: "Hire Me" },
-  { to: "/tickets", label: "My Tickets" },
   { to: "/contact", label: "Contact" },
 ] as const;
 
@@ -40,6 +38,12 @@ export function Navbar() {
               {item.label}
             </a>
           ))}
+          <a
+            href="/admin/login"
+            className="rounded-md border border-[#28e7ff]/30 px-3 py-1.5 text-xs font-semibold text-[#28e7ff] hover:bg-[#28e7ff]/10"
+          >
+            Admin
+          </a>
         </nav>
 
         <button
@@ -63,6 +67,13 @@ export function Navbar() {
               {item.label}
             </a>
           ))}
+          <a
+            href="/admin/login"
+            onClick={() => setOpen(false)}
+            className="block rounded-md px-3 py-2 text-sm font-medium text-[#28e7ff] hover:bg-white/5"
+          >
+            Admin
+          </a>
         </div>
       </div>
     </header>

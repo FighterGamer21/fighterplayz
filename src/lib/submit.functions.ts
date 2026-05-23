@@ -41,58 +41,27 @@ const hireSchema = z.object({
 export const submitHireTicket = createServerFn({ method: "POST" })
   .inputValidator((input) => hireSchema.parse(input))
   .handler(async ({ data }) => {
-    const { data: ticketId, error } = await (supabaseAdmin as any).rpc("create_hire_ticket", {
-      _name: data.name,
-      _email: data.email,
-      _discord: data.discord || "",
-      _project_type: data.project_type,
-      _budget_range: data.budget_range || "",
-      _timeline: data.timeline || "",
-      _details: data.details,
-      _reference_link: data.reference_link || "",
-      _priority: data.priority,
-      _service_slug: data.service_slug || "",
-      _service_price_inr: data.service_price_inr ?? null,
-      _display_currency: data.display_currency ?? null,
-      _converted_amount: data.converted_amount ?? null,
-    });
+    const { data: row, error } = await supabaseAdmin
+      .from("hire_tickets")
+      .insert({
+        name: data.name,
+        email: data.email,
+        discord: data.discord || null,
+        project_type: data.project_type,
+        budget_range: data.budget_range || null,
+        timeline: data.timeline || null,
+        details: data.details,
+        reference_link: data.reference_link || null,
+        priority: data.priority,
+        service_slug: data.service_slug || null,
+        service_price_inr: data.service_price_inr ?? null,
+        display_currency: data.display_currency ?? null,
+        converted_amount: data.converted_amount ?? null,
+      } as any)
+      .select("ticket_id")
+      .single();
     if (error) throw new Error(error.message);
-    return { ok: true, ticket_id: ticketId ?? null };
-  });
-
-const ticketLookupSchema = z.object({
-  ticket_id: z.string().trim().min(3).max(80),
-  email: z.string().trim().email().max(255),
-});
-
-export const getPublicTicketThread = createServerFn({ method: "POST" })
-  .inputValidator((input) => ticketLookupSchema.parse(input))
-  .handler(async ({ data }) => {
-    const { data: result, error } = await (supabaseAdmin as any).rpc("get_ticket_thread", {
-      _ticket_id: data.ticket_id,
-      _email: data.email,
-    });
-    if (error) throw new Error(error.message);
-    if (!result?.ticket) throw new Error("Ticket not found. Check ticket ID and email.");
-    return { ticket: result.ticket, messages: result.messages ?? [] };
-  });
-
-const publicTicketReplySchema = ticketLookupSchema.extend({
-  name: z.string().trim().min(1).max(120),
-  message: z.string().trim().min(1).max(2000),
-});
-
-export const submitPublicTicketReply = createServerFn({ method: "POST" })
-  .inputValidator((input) => publicTicketReplySchema.parse(input))
-  .handler(async ({ data }) => {
-    const { error } = await (supabaseAdmin as any).rpc("submit_ticket_reply", {
-      _ticket_id: data.ticket_id,
-      _email: data.email,
-      _sender_name: data.name,
-      _message: data.message,
-    });
-    if (error) throw new Error(error.message);
-    return { ok: true };
+    return { ok: true, ticket_id: row?.ticket_id ?? null };
   });
 
 // Reviews — authenticated users only (RLS enforces user_id = auth.uid())

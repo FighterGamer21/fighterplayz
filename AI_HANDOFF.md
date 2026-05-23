@@ -19,7 +19,7 @@ src/
   routes/                   File-based routing (TanStack Router)
     __root.tsx              Root layout shell
     index.tsx               Home
-    {about,ecosystem,plugins,projects,servers,websites,services,hire,tickets,contact}.tsx
+    {about,plugins,projects,servers,websites,services,hire,contact}.tsx
     plugins.$slug.tsx       Plugin detail
     projects.$slug.tsx      Project detail
     announcements.tsx       Public updates feed
@@ -56,7 +56,6 @@ supabase/
 | `/servers` `/websites` | Filtered project views by category |
 | `/services` | Services list |
 | `/hire` | Hire form (also embedded as HireDialog with currency converter) |
-| `/tickets` | Public ticket lookup + reply chat using ticket ID and email |
 | `/contact` | Contact form |
 | `/announcements` | Public site updates |
 | `/reviews` | Approved user reviews + auth-gated submission form |
@@ -71,7 +70,6 @@ supabase/
 - `plugins`, `projects`, `services`, `skills`, `blog_posts`, `experiences`, `testimonials` (legacy/admin-only), `site_settings`
 - `hire_tickets` — auto ticket_id `FP-REQ-####`. Columns:
   `id, ticket_id, name, email, discord, project_type, service_slug, service_price_inr, display_currency, converted_amount, budget_range, timeline, details, reference_link, priority, status, admin_notes, created_at, updated_at`
-- `ticket_messages` — per-ticket chat messages. Public users reply through ticket ID + email; admins reply from `/admin/tickets`.
 - `contact_messages`
 - `announcements` — `title, body, type, published, pinned, created_at, updated_at`
 - `reviews` — `user_id, name, role, message, rating(1-5), approved, created_at, updated_at`
@@ -96,17 +94,16 @@ VITE_SUPABASE_PUBLISHABLE_KEY
 VITE_SUPABASE_PROJECT_ID
 ```
 
-Optional server-only (never put in client code):
+Server-only (already set in Supabase secrets, never put in client code):
 `SUPABASE_SERVICE_ROLE_KEY`, `SUPABASE_DB_URL`, `LOVABLE_API_KEY`.
 
 ## How tickets work
 
 1. User fills the form in `HireDialog` (or `/hire`).
 2. They pick a service + display currency; the dialog converts the INR price to the chosen currency (estimate only).
-3. `submitHireTicket` (serverFn, anonymous) calls `create_hire_ticket` RPC. The DB generates `ticket_id = FP-REQ-XXXX`.
+3. `submitHireTicket` (serverFn, anonymous) inserts into `hire_tickets`. The DB generates `ticket_id = FP-REQ-XXXX`.
 4. User sees a toast with the ticket id.
-5. User can open `/tickets`, enter ticket ID + email, and reply in the ticket thread.
-6. Admin sees, replies, and updates status at `/admin/tickets`. Both sides auto-refresh every few seconds.
+5. Admin sees + updates status at `/admin/tickets`.
 
 Statuses: `NEW | REVIEWING | ACCEPTED | IN_PROGRESS | COMPLETED | REJECTED`.
 
@@ -132,15 +129,17 @@ Statuses: `NEW | REVIEWING | ACCEPTED | IN_PROGRESS | COMPLETED | REJECTED`.
 ```json
 {
   "buildCommand": "npm run build",
-  "installCommand": "npm install --legacy-peer-deps"
+  "installCommand": "npm install --legacy-peer-deps",
+  "framework": "vite",
+  "outputDirectory": "dist/client"
 }
 ```
 
 In the Vercel project settings:
-- Framework Preset: let Vercel auto-detect TanStack Start/Nitro
+- Framework Preset: **Vite**
 - Install Command: `npm install --legacy-peer-deps`
 - Build Command: `npm run build`
-- Output Directory: leave empty/default
+- Output Directory: `dist/client`
 - Environment Variables (Production + Preview): set all five env vars listed above.
 
 ## Commands

@@ -12,18 +12,17 @@ import appCss from "../styles.css?url";
 
 function NotFoundComponent() {
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#05070d] px-4 text-white">
-      <div className="glass max-w-md rounded-2xl p-8 text-center">
-        <p className="text-xs font-bold uppercase tracking-[0.22em] text-[#28e7ff]">Signal Lost</p>
-        <h1 className="mt-3 text-7xl font-black">404</h1>
-        <h2 className="mt-4 text-xl font-black">Page not found</h2>
-        <p className="mt-2 text-sm text-slate-400">
-          This route is not connected to the FighterPlayz network.
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="text-7xl font-bold text-foreground">404</h1>
+        <h2 className="mt-4 text-xl font-semibold text-foreground">Page not found</h2>
+        <p className="mt-2 text-sm text-muted-foreground">
+          The page you're looking for doesn't exist or has been moved.
         </p>
         <div className="mt-6">
           <Link
             to="/"
-            className="inline-flex items-center justify-center rounded-md bg-[#28e7ff] px-4 py-2 text-sm font-bold text-[#05070d] transition-colors hover:bg-white"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Go home
           </Link>
@@ -38,12 +37,12 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
   const router = useRouter();
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-[#05070d] px-4 text-white">
-      <div className="glass max-w-md rounded-2xl p-8 text-center">
-        <h1 className="text-xl font-black tracking-tight">
+    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+      <div className="max-w-md text-center">
+        <h1 className="text-xl font-semibold tracking-tight text-foreground">
           This page didn't load
         </h1>
-        <p className="mt-2 text-sm text-slate-400">
+        <p className="mt-2 text-sm text-muted-foreground">
           Something went wrong on our end. You can try refreshing or head back home.
         </p>
         <div className="mt-6 flex flex-wrap justify-center gap-2">
@@ -52,13 +51,13 @@ function ErrorComponent({ error, reset }: { error: Error; reset: () => void }) {
               router.invalidate();
               reset();
             }}
-            className="inline-flex items-center justify-center rounded-md bg-[#28e7ff] px-4 py-2 text-sm font-bold text-[#05070d] transition-colors hover:bg-white"
+            className="inline-flex items-center justify-center rounded-md bg-primary px-4 py-2 text-sm font-medium text-primary-foreground transition-colors hover:bg-primary/90"
           >
             Try again
           </button>
           <a
             href="/"
-            className="inline-flex items-center justify-center rounded-md border border-white/10 px-4 py-2 text-sm font-bold text-slate-200 transition-colors hover:border-[#28e7ff]/40 hover:text-[#28e7ff]"
+            className="inline-flex items-center justify-center rounded-md border border-input bg-background px-4 py-2 text-sm font-medium text-foreground transition-colors hover:bg-accent"
           >
             Go home
           </a>
@@ -73,14 +72,14 @@ export const Route = createRootRouteWithContext<{ queryClient: QueryClient }>()(
     meta: [
       { charSet: "utf-8" },
       { name: "viewport", content: "width=device-width, initial-scale=1" },
-      { title: "FighterPlayz Ecosystem" },
-      { name: "description", content: "FighterPlayz Minecraft infrastructure, plugin development, server optimization, and web systems ecosystem." },
-      { name: "author", content: "FighterPlayz" },
-      { property: "og:title", content: "FighterPlayz Ecosystem" },
-      { property: "og:description", content: "Premium Minecraft infrastructure, plugin development, and web systems." },
+      { title: "Lovable App" },
+      { name: "description", content: "Lovable Generated Project" },
+      { name: "author", content: "Lovable" },
+      { property: "og:title", content: "Lovable App" },
+      { property: "og:description", content: "Lovable Generated Project" },
       { property: "og:type", content: "website" },
       { name: "twitter:card", content: "summary" },
-      { name: "twitter:site", content: "@fightergamerofficial1" },
+      { name: "twitter:site", content: "@Lovable" },
     ],
     links: [
       {

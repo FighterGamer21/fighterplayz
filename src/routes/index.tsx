@@ -35,7 +35,6 @@ const NAV = [
   ["Projects", "/projects"],
   ["Plugins", "/plugins"],
   ["Services", "/services"],
-  ["My Tickets", "/tickets"],
   ["Contact", "/contact"],
 ] as const;
 
@@ -80,9 +79,6 @@ function Index() {
                 </a>
                 <a href="/contact" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[#28e7ff]/30 px-5 py-2.5 text-sm font-semibold text-[#28e7ff] hover:bg-[#28e7ff]/10">
                   Contact
-                </a>
-                <a href="/tickets" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-white/10 px-5 py-2.5 text-sm font-semibold text-slate-200 hover:border-[#28e7ff]/40 hover:text-[#28e7ff]">
-                  Track ticket
                 </a>
               </div>
             </div>
@@ -232,9 +228,8 @@ function Index() {
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#28e7ff]">Project Request</p>
             <h2 className="mx-auto mt-4 max-w-3xl text-4xl font-black text-white sm:text-5xl">Initialize a Project Request</h2>
             <p className="mx-auto mt-4 max-w-2xl text-slate-300">Start a plugin, optimization pass, web build, or full ecosystem layer with a clear brief.</p>
-            <div className="mt-8 flex flex-wrap justify-center gap-3">
+            <div className="mt-8">
               <a href="/contact" className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#28e7ff] px-5 py-2.5 text-sm font-semibold text-[#05070d] shadow-glow hover:bg-white">Open request channel</a>
-              <a href="/tickets" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[#28e7ff]/30 px-5 py-2.5 text-sm font-semibold text-[#28e7ff] hover:bg-[#28e7ff]/10">Track existing ticket</a>
             </div>
           </div>
         </section>
