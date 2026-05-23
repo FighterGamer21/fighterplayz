@@ -10,6 +10,7 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WebsitesRouteImport } from './routes/websites'
+import { Route as TicketsRouteImport } from './routes/tickets'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ServersRouteImport } from './routes/servers'
@@ -17,6 +18,7 @@ import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as HireRouteImport } from './routes/hire'
+import { Route as EcosystemRouteImport } from './routes/ecosystem'
 import { Route as ContactRouteImport } from './routes/contact'
 import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as AboutRouteImport } from './routes/about'
@@ -39,6 +41,11 @@ import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcem
 const WebsitesRoute = WebsitesRouteImport.update({
   id: '/websites',
   path: '/websites',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const TicketsRoute = TicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -74,6 +81,11 @@ const PluginsRoute = PluginsRouteImport.update({
 const HireRoute = HireRouteImport.update({
   id: '/hire',
   path: '/hire',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const EcosystemRoute = EcosystemRouteImport.update({
+  id: '/ecosystem',
+  path: '/ecosystem',
   getParentRoute: () => rootRouteImport,
 } as any)
 const ContactRoute = ContactRouteImport.update({
@@ -172,6 +184,7 @@ export interface FileRoutesByFullPath {
   '/about': typeof AboutRoute
   '/announcements': typeof AnnouncementsRoute
   '/contact': typeof ContactRoute
+  '/ecosystem': typeof EcosystemRoute
   '/hire': typeof HireRoute
   '/plugins': typeof PluginsRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
@@ -179,6 +192,7 @@ export interface FileRoutesByFullPath {
   '/servers': typeof ServersRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tickets': typeof TicketsRoute
   '/websites': typeof WebsitesRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/blog': typeof AdminBlogRoute
@@ -200,6 +214,7 @@ export interface FileRoutesByTo {
   '/about': typeof AboutRoute
   '/announcements': typeof AnnouncementsRoute
   '/contact': typeof ContactRoute
+  '/ecosystem': typeof EcosystemRoute
   '/hire': typeof HireRoute
   '/plugins': typeof PluginsRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
@@ -207,6 +222,7 @@ export interface FileRoutesByTo {
   '/servers': typeof ServersRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tickets': typeof TicketsRoute
   '/websites': typeof WebsitesRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/blog': typeof AdminBlogRoute
@@ -229,6 +245,7 @@ export interface FileRoutesById {
   '/about': typeof AboutRoute
   '/announcements': typeof AnnouncementsRoute
   '/contact': typeof ContactRoute
+  '/ecosystem': typeof EcosystemRoute
   '/hire': typeof HireRoute
   '/plugins': typeof PluginsRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
@@ -236,6 +253,7 @@ export interface FileRoutesById {
   '/servers': typeof ServersRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tickets': typeof TicketsRoute
   '/websites': typeof WebsitesRoute
   '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/blog': typeof AdminBlogRoute
@@ -259,6 +277,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/announcements'
     | '/contact'
+    | '/ecosystem'
     | '/hire'
     | '/plugins'
     | '/projects'
@@ -266,6 +285,7 @@ export interface FileRouteTypes {
     | '/servers'
     | '/services'
     | '/sitemap.xml'
+    | '/tickets'
     | '/websites'
     | '/admin/announcements'
     | '/admin/blog'
@@ -287,6 +307,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/announcements'
     | '/contact'
+    | '/ecosystem'
     | '/hire'
     | '/plugins'
     | '/projects'
@@ -294,6 +315,7 @@ export interface FileRouteTypes {
     | '/servers'
     | '/services'
     | '/sitemap.xml'
+    | '/tickets'
     | '/websites'
     | '/admin/announcements'
     | '/admin/blog'
@@ -315,6 +337,7 @@ export interface FileRouteTypes {
     | '/about'
     | '/announcements'
     | '/contact'
+    | '/ecosystem'
     | '/hire'
     | '/plugins'
     | '/projects'
@@ -322,6 +345,7 @@ export interface FileRouteTypes {
     | '/servers'
     | '/services'
     | '/sitemap.xml'
+    | '/tickets'
     | '/websites'
     | '/admin/announcements'
     | '/admin/blog'
@@ -344,6 +368,7 @@ export interface RootRouteChildren {
   AboutRoute: typeof AboutRoute
   AnnouncementsRoute: typeof AnnouncementsRoute
   ContactRoute: typeof ContactRoute
+  EcosystemRoute: typeof EcosystemRoute
   HireRoute: typeof HireRoute
   PluginsRoute: typeof PluginsRouteWithChildren
   ProjectsRoute: typeof ProjectsRouteWithChildren
@@ -351,6 +376,7 @@ export interface RootRouteChildren {
   ServersRoute: typeof ServersRoute
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TicketsRoute: typeof TicketsRoute
   WebsitesRoute: typeof WebsitesRoute
   AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
   AdminBlogRoute: typeof AdminBlogRoute
@@ -373,6 +399,13 @@ declare module '@tanstack/react-router' {
       path: '/websites'
       fullPath: '/websites'
       preLoaderRoute: typeof WebsitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tickets': {
+      id: '/tickets'
+      path: '/tickets'
+      fullPath: '/tickets'
+      preLoaderRoute: typeof TicketsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -422,6 +455,13 @@ declare module '@tanstack/react-router' {
       path: '/hire'
       fullPath: '/hire'
       preLoaderRoute: typeof HireRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ecosystem': {
+      id: '/ecosystem'
+      path: '/ecosystem'
+      fullPath: '/ecosystem'
+      preLoaderRoute: typeof EcosystemRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/contact': {
@@ -581,6 +621,7 @@ const rootRouteChildren: RootRouteChildren = {
   AboutRoute: AboutRoute,
   AnnouncementsRoute: AnnouncementsRoute,
   ContactRoute: ContactRoute,
+  EcosystemRoute: EcosystemRoute,
   HireRoute: HireRoute,
   PluginsRoute: PluginsRouteWithChildren,
   ProjectsRoute: ProjectsRouteWithChildren,
@@ -588,6 +629,7 @@ const rootRouteChildren: RootRouteChildren = {
   ServersRoute: ServersRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TicketsRoute: TicketsRoute,
   WebsitesRoute: WebsitesRoute,
   AdminAnnouncementsRoute: AdminAnnouncementsRoute,
   AdminBlogRoute: AdminBlogRoute,
@@ -605,3 +647,13 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
+
+import type { getRouter } from './router.tsx'
+import type { startInstance } from './start.ts'
+declare module '@tanstack/react-start' {
+  interface Register {
+    ssr: true
+    router: Awaited<ReturnType<typeof getRouter>>
+    config: Awaited<ReturnType<typeof startInstance.getOptions>>
+  }
+}
