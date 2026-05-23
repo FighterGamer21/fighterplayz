@@ -14,6 +14,39 @@ export type Database = {
   }
   public: {
     Tables: {
+      announcements: {
+        Row: {
+          body: string
+          created_at: string
+          id: string
+          pinned: boolean
+          published: boolean
+          title: string
+          type: string
+          updated_at: string
+        }
+        Insert: {
+          body: string
+          created_at?: string
+          id?: string
+          pinned?: boolean
+          published?: boolean
+          title: string
+          type?: string
+          updated_at?: string
+        }
+        Update: {
+          body?: string
+          created_at?: string
+          id?: string
+          pinned?: boolean
+          published?: boolean
+          title?: string
+          type?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       blog_posts: {
         Row: {
           content: string
@@ -132,15 +165,19 @@ export type Database = {
         Row: {
           admin_notes: string | null
           budget_range: string | null
+          converted_amount: number | null
           created_at: string
           details: string
           discord: string | null
+          display_currency: string | null
           email: string
           id: string
           name: string
           priority: string
           project_type: string
           reference_link: string | null
+          service_price_inr: number | null
+          service_slug: string | null
           status: Database["public"]["Enums"]["hire_status"]
           ticket_id: string
           timeline: string | null
@@ -149,15 +186,19 @@ export type Database = {
         Insert: {
           admin_notes?: string | null
           budget_range?: string | null
+          converted_amount?: number | null
           created_at?: string
           details: string
           discord?: string | null
+          display_currency?: string | null
           email: string
           id?: string
           name: string
           priority?: string
           project_type: string
           reference_link?: string | null
+          service_price_inr?: number | null
+          service_slug?: string | null
           status?: Database["public"]["Enums"]["hire_status"]
           ticket_id?: string
           timeline?: string | null
@@ -166,15 +207,19 @@ export type Database = {
         Update: {
           admin_notes?: string | null
           budget_range?: string | null
+          converted_amount?: number | null
           created_at?: string
           details?: string
           discord?: string | null
+          display_currency?: string | null
           email?: string
           id?: string
           name?: string
           priority?: string
           project_type?: string
           reference_link?: string | null
+          service_price_inr?: number | null
+          service_slug?: string | null
           status?: Database["public"]["Enums"]["hire_status"]
           ticket_id?: string
           timeline?: string | null
@@ -335,6 +380,42 @@ export type Database = {
           tech_stack?: string[]
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      reviews: {
+        Row: {
+          approved: boolean
+          created_at: string
+          id: string
+          message: string
+          name: string
+          rating: number
+          role: string | null
+          updated_at: string
+          user_id: string
+        }
+        Insert: {
+          approved?: boolean
+          created_at?: string
+          id?: string
+          message: string
+          name: string
+          rating?: number
+          role?: string | null
+          updated_at?: string
+          user_id: string
+        }
+        Update: {
+          approved?: boolean
+          created_at?: string
+          id?: string
+          message?: string
+          name?: string
+          rating?: number
+          role?: string | null
+          updated_at?: string
+          user_id?: string
         }
         Relationships: []
       }

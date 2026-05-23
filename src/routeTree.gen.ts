@@ -10,15 +10,17 @@
 
 import { Route as rootRouteImport } from './routes/__root'
 import { Route as WebsitesRouteImport } from './routes/websites'
-import { Route as ReviewsRouteImport } from './routes/reviews'
-import { Route as AnnouncementsRouteImport } from './routes/announcements'
+import { Route as TicketsRouteImport } from './routes/tickets'
 import { Route as SitemapDotxmlRouteImport } from './routes/sitemap[.]xml'
 import { Route as ServicesRouteImport } from './routes/services'
 import { Route as ServersRouteImport } from './routes/servers'
+import { Route as ReviewsRouteImport } from './routes/reviews'
 import { Route as ProjectsRouteImport } from './routes/projects'
 import { Route as PluginsRouteImport } from './routes/plugins'
 import { Route as HireRouteImport } from './routes/hire'
+import { Route as EcosystemRouteImport } from './routes/ecosystem'
 import { Route as ContactRouteImport } from './routes/contact'
+import { Route as AnnouncementsRouteImport } from './routes/announcements'
 import { Route as AboutRouteImport } from './routes/about'
 import { Route as IndexRouteImport } from './routes/index'
 import { Route as AdminIndexRouteImport } from './routes/admin.index'
@@ -28,12 +30,12 @@ import { Route as AdminTicketsRouteImport } from './routes/admin.tickets'
 import { Route as AdminTestimonialsRouteImport } from './routes/admin.testimonials'
 import { Route as AdminSkillsRouteImport } from './routes/admin.skills'
 import { Route as AdminServicesRouteImport } from './routes/admin.services'
+import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminProjectsRouteImport } from './routes/admin.projects'
 import { Route as AdminPluginsRouteImport } from './routes/admin.plugins'
 import { Route as AdminMessagesRouteImport } from './routes/admin.messages'
 import { Route as AdminLoginRouteImport } from './routes/admin.login'
 import { Route as AdminBlogRouteImport } from './routes/admin.blog'
-import { Route as AdminReviewsRouteImport } from './routes/admin.reviews'
 import { Route as AdminAnnouncementsRouteImport } from './routes/admin.announcements'
 
 const WebsitesRoute = WebsitesRouteImport.update({
@@ -41,14 +43,9 @@ const WebsitesRoute = WebsitesRouteImport.update({
   path: '/websites',
   getParentRoute: () => rootRouteImport,
 } as any)
-const ReviewsRoute = ReviewsRouteImport.update({
-  id: '/reviews',
-  path: '/reviews',
-  getParentRoute: () => rootRouteImport,
-} as any)
-const AnnouncementsRoute = AnnouncementsRouteImport.update({
-  id: '/announcements',
-  path: '/announcements',
+const TicketsRoute = TicketsRouteImport.update({
+  id: '/tickets',
+  path: '/tickets',
   getParentRoute: () => rootRouteImport,
 } as any)
 const SitemapDotxmlRoute = SitemapDotxmlRouteImport.update({
@@ -66,6 +63,11 @@ const ServersRoute = ServersRouteImport.update({
   path: '/servers',
   getParentRoute: () => rootRouteImport,
 } as any)
+const ReviewsRoute = ReviewsRouteImport.update({
+  id: '/reviews',
+  path: '/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ProjectsRoute = ProjectsRouteImport.update({
   id: '/projects',
   path: '/projects',
@@ -81,9 +83,19 @@ const HireRoute = HireRouteImport.update({
   path: '/hire',
   getParentRoute: () => rootRouteImport,
 } as any)
+const EcosystemRoute = EcosystemRouteImport.update({
+  id: '/ecosystem',
+  path: '/ecosystem',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const ContactRoute = ContactRouteImport.update({
   id: '/contact',
   path: '/contact',
+  getParentRoute: () => rootRouteImport,
+} as any)
+const AnnouncementsRoute = AnnouncementsRouteImport.update({
+  id: '/announcements',
+  path: '/announcements',
   getParentRoute: () => rootRouteImport,
 } as any)
 const AboutRoute = AboutRouteImport.update({
@@ -131,6 +143,11 @@ const AdminServicesRoute = AdminServicesRouteImport.update({
   path: '/admin/services',
   getParentRoute: () => rootRouteImport,
 } as any)
+const AdminReviewsRoute = AdminReviewsRouteImport.update({
+  id: '/admin/reviews',
+  path: '/admin/reviews',
+  getParentRoute: () => rootRouteImport,
+} as any)
 const AdminProjectsRoute = AdminProjectsRouteImport.update({
   id: '/admin/projects',
   path: '/admin/projects',
@@ -156,11 +173,6 @@ const AdminBlogRoute = AdminBlogRouteImport.update({
   path: '/admin/blog',
   getParentRoute: () => rootRouteImport,
 } as any)
-const AdminReviewsRoute = AdminReviewsRouteImport.update({
-  id: '/admin/reviews',
-  path: '/admin/reviews',
-  getParentRoute: () => rootRouteImport,
-} as any)
 const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
   id: '/admin/announcements',
   path: '/admin/announcements',
@@ -170,19 +182,25 @@ const AdminAnnouncementsRoute = AdminAnnouncementsRouteImport.update({
 export interface FileRoutesByFullPath {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/announcements': typeof AnnouncementsRoute
   '/contact': typeof ContactRoute
+  '/ecosystem': typeof EcosystemRoute
   '/hire': typeof HireRoute
   '/plugins': typeof PluginsRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
+  '/reviews': typeof ReviewsRoute
   '/servers': typeof ServersRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tickets': typeof TicketsRoute
   '/websites': typeof WebsitesRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/plugins': typeof AdminPluginsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/skills': typeof AdminSkillsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -194,19 +212,25 @@ export interface FileRoutesByFullPath {
 export interface FileRoutesByTo {
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/announcements': typeof AnnouncementsRoute
   '/contact': typeof ContactRoute
+  '/ecosystem': typeof EcosystemRoute
   '/hire': typeof HireRoute
   '/plugins': typeof PluginsRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
+  '/reviews': typeof ReviewsRoute
   '/servers': typeof ServersRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tickets': typeof TicketsRoute
   '/websites': typeof WebsitesRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/plugins': typeof AdminPluginsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/skills': typeof AdminSkillsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -219,19 +243,25 @@ export interface FileRoutesById {
   __root__: typeof rootRouteImport
   '/': typeof IndexRoute
   '/about': typeof AboutRoute
+  '/announcements': typeof AnnouncementsRoute
   '/contact': typeof ContactRoute
+  '/ecosystem': typeof EcosystemRoute
   '/hire': typeof HireRoute
   '/plugins': typeof PluginsRouteWithChildren
   '/projects': typeof ProjectsRouteWithChildren
+  '/reviews': typeof ReviewsRoute
   '/servers': typeof ServersRoute
   '/services': typeof ServicesRoute
   '/sitemap.xml': typeof SitemapDotxmlRoute
+  '/tickets': typeof TicketsRoute
   '/websites': typeof WebsitesRoute
+  '/admin/announcements': typeof AdminAnnouncementsRoute
   '/admin/blog': typeof AdminBlogRoute
   '/admin/login': typeof AdminLoginRoute
   '/admin/messages': typeof AdminMessagesRoute
   '/admin/plugins': typeof AdminPluginsRoute
   '/admin/projects': typeof AdminProjectsRoute
+  '/admin/reviews': typeof AdminReviewsRoute
   '/admin/services': typeof AdminServicesRoute
   '/admin/skills': typeof AdminSkillsRoute
   '/admin/testimonials': typeof AdminTestimonialsRoute
@@ -245,19 +275,25 @@ export interface FileRouteTypes {
   fullPaths:
     | '/'
     | '/about'
+    | '/announcements'
     | '/contact'
+    | '/ecosystem'
     | '/hire'
     | '/plugins'
     | '/projects'
+    | '/reviews'
     | '/servers'
     | '/services'
     | '/sitemap.xml'
+    | '/tickets'
     | '/websites'
+    | '/admin/announcements'
     | '/admin/blog'
     | '/admin/login'
     | '/admin/messages'
     | '/admin/plugins'
     | '/admin/projects'
+    | '/admin/reviews'
     | '/admin/services'
     | '/admin/skills'
     | '/admin/testimonials'
@@ -269,19 +305,25 @@ export interface FileRouteTypes {
   to:
     | '/'
     | '/about'
+    | '/announcements'
     | '/contact'
+    | '/ecosystem'
     | '/hire'
     | '/plugins'
     | '/projects'
+    | '/reviews'
     | '/servers'
     | '/services'
     | '/sitemap.xml'
+    | '/tickets'
     | '/websites'
+    | '/admin/announcements'
     | '/admin/blog'
     | '/admin/login'
     | '/admin/messages'
     | '/admin/plugins'
     | '/admin/projects'
+    | '/admin/reviews'
     | '/admin/services'
     | '/admin/skills'
     | '/admin/testimonials'
@@ -293,19 +335,25 @@ export interface FileRouteTypes {
     | '__root__'
     | '/'
     | '/about'
+    | '/announcements'
     | '/contact'
+    | '/ecosystem'
     | '/hire'
     | '/plugins'
     | '/projects'
+    | '/reviews'
     | '/servers'
     | '/services'
     | '/sitemap.xml'
+    | '/tickets'
     | '/websites'
+    | '/admin/announcements'
     | '/admin/blog'
     | '/admin/login'
     | '/admin/messages'
     | '/admin/plugins'
     | '/admin/projects'
+    | '/admin/reviews'
     | '/admin/services'
     | '/admin/skills'
     | '/admin/testimonials'
@@ -318,23 +366,25 @@ export interface FileRouteTypes {
 export interface RootRouteChildren {
   IndexRoute: typeof IndexRoute
   AboutRoute: typeof AboutRoute
+  AnnouncementsRoute: typeof AnnouncementsRoute
   ContactRoute: typeof ContactRoute
+  EcosystemRoute: typeof EcosystemRoute
   HireRoute: typeof HireRoute
   PluginsRoute: typeof PluginsRouteWithChildren
   ProjectsRoute: typeof ProjectsRouteWithChildren
+  ReviewsRoute: typeof ReviewsRoute
   ServersRoute: typeof ServersRoute
   ServicesRoute: typeof ServicesRoute
   SitemapDotxmlRoute: typeof SitemapDotxmlRoute
+  TicketsRoute: typeof TicketsRoute
   WebsitesRoute: typeof WebsitesRoute
-  ReviewsRoute: typeof ReviewsRoute
-  AnnouncementsRoute: typeof AnnouncementsRoute
-  AdminBlogRoute: typeof AdminBlogRoute
-  AdminReviewsRoute: typeof AdminReviewsRoute
   AdminAnnouncementsRoute: typeof AdminAnnouncementsRoute
+  AdminBlogRoute: typeof AdminBlogRoute
   AdminLoginRoute: typeof AdminLoginRoute
   AdminMessagesRoute: typeof AdminMessagesRoute
   AdminPluginsRoute: typeof AdminPluginsRoute
   AdminProjectsRoute: typeof AdminProjectsRoute
+  AdminReviewsRoute: typeof AdminReviewsRoute
   AdminServicesRoute: typeof AdminServicesRoute
   AdminSkillsRoute: typeof AdminSkillsRoute
   AdminTestimonialsRoute: typeof AdminTestimonialsRoute
@@ -349,6 +399,13 @@ declare module '@tanstack/react-router' {
       path: '/websites'
       fullPath: '/websites'
       preLoaderRoute: typeof WebsitesRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/tickets': {
+      id: '/tickets'
+      path: '/tickets'
+      fullPath: '/tickets'
+      preLoaderRoute: typeof TicketsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/sitemap.xml': {
@@ -370,6 +427,13 @@ declare module '@tanstack/react-router' {
       path: '/servers'
       fullPath: '/servers'
       preLoaderRoute: typeof ServersRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/reviews': {
+      id: '/reviews'
+      path: '/reviews'
+      fullPath: '/reviews'
+      preLoaderRoute: typeof ReviewsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/projects': {
@@ -398,6 +462,20 @@ declare module '@tanstack/react-router' {
       path: '/contact'
       fullPath: '/contact'
       preLoaderRoute: typeof ContactRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/ecosystem': {
+      id: '/ecosystem'
+      path: '/ecosystem'
+      fullPath: '/ecosystem'
+      preLoaderRoute: typeof EcosystemRouteImport
+      parentRoute: typeof rootRouteImport
+    }
+    '/announcements': {
+      id: '/announcements'
+      path: '/announcements'
+      fullPath: '/announcements'
+      preLoaderRoute: typeof AnnouncementsRouteImport
       parentRoute: typeof rootRouteImport
     }
     '/about': {
@@ -463,6 +541,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminServicesRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/reviews': {
+      id: '/admin/reviews'
+      path: '/admin/reviews'
+      fullPath: '/admin/reviews'
+      preLoaderRoute: typeof AdminReviewsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
     '/admin/projects': {
       id: '/admin/projects'
       path: '/admin/projects'
@@ -498,6 +583,13 @@ declare module '@tanstack/react-router' {
       preLoaderRoute: typeof AdminBlogRouteImport
       parentRoute: typeof rootRouteImport
     }
+    '/admin/announcements': {
+      id: '/admin/announcements'
+      path: '/admin/announcements'
+      fullPath: '/admin/announcements'
+      preLoaderRoute: typeof AdminAnnouncementsRouteImport
+      parentRoute: typeof rootRouteImport
+    }
   }
 }
 
@@ -527,23 +619,25 @@ const ProjectsRouteWithChildren = ProjectsRoute._addFileChildren(
 const rootRouteChildren: RootRouteChildren = {
   IndexRoute: IndexRoute,
   AboutRoute: AboutRoute,
+  AnnouncementsRoute: AnnouncementsRoute,
   ContactRoute: ContactRoute,
+  EcosystemRoute: EcosystemRoute,
   HireRoute: HireRoute,
   PluginsRoute: PluginsRouteWithChildren,
   ProjectsRoute: ProjectsRouteWithChildren,
+  ReviewsRoute: ReviewsRoute,
   ServersRoute: ServersRoute,
   ServicesRoute: ServicesRoute,
   SitemapDotxmlRoute: SitemapDotxmlRoute,
+  TicketsRoute: TicketsRoute,
   WebsitesRoute: WebsitesRoute,
-  ReviewsRoute: ReviewsRoute,
-  AnnouncementsRoute: AnnouncementsRoute,
-  AdminBlogRoute: AdminBlogRoute,
-  AdminReviewsRoute: AdminReviewsRoute,
   AdminAnnouncementsRoute: AdminAnnouncementsRoute,
+  AdminBlogRoute: AdminBlogRoute,
   AdminLoginRoute: AdminLoginRoute,
   AdminMessagesRoute: AdminMessagesRoute,
   AdminPluginsRoute: AdminPluginsRoute,
   AdminProjectsRoute: AdminProjectsRoute,
+  AdminReviewsRoute: AdminReviewsRoute,
   AdminServicesRoute: AdminServicesRoute,
   AdminSkillsRoute: AdminSkillsRoute,
   AdminTestimonialsRoute: AdminTestimonialsRoute,
@@ -553,13 +647,3 @@ const rootRouteChildren: RootRouteChildren = {
 export const routeTree = rootRouteImport
   ._addFileChildren(rootRouteChildren)
   ._addFileTypes<FileRouteTypes>()
-
-import type { getRouter } from './router.tsx'
-import type { startInstance } from './start.ts'
-declare module '@tanstack/react-start' {
-  interface Register {
-    ssr: true
-    router: Awaited<ReturnType<typeof getRouter>>
-    config: Awaited<ReturnType<typeof startInstance.getOptions>>
-  }
-}

@@ -2,41 +2,20 @@ import { createServerFn } from "@tanstack/react-start";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 export const getHomeData = createServerFn({ method: "GET" }).handler(async () => {
-  const [projects, plugins, services, skills, reviews, announcements] = await Promise.all([
+  const [projects, plugins, services, skills, testimonials] = await Promise.all([
     supabaseAdmin.from("projects").select("*").eq("featured", true).order("sort_order"),
     supabaseAdmin.from("plugins").select("*").eq("featured", true).order("created_at", { ascending: false }).limit(6),
     supabaseAdmin.from("services").select("*").eq("active", true),
     supabaseAdmin.from("skills").select("*").order("sort_order"),
-    (supabaseAdmin.from("reviews" as any) as any).select("*").eq("approved", true).order("created_at", { ascending: false }).limit(6),
-    (supabaseAdmin.from("announcements" as any) as any).select("*").eq("published", true).order("pinned", { ascending: false }).order("created_at", { ascending: false }).limit(4),
+    supabaseAdmin.from("testimonials").select("*").eq("approved", true),
   ]);
   return {
     projects: projects.data ?? [],
     plugins: plugins.data ?? [],
     services: services.data ?? [],
     skills: skills.data ?? [],
-    testimonials: reviews.data ?? [],
-    announcements: announcements.data ?? [],
+    testimonials: testimonials.data ?? [],
   };
-});
-
-export const getApprovedReviews = createServerFn({ method: "GET" }).handler(async () => {
-  const { data, error } = await (supabaseAdmin.from("reviews" as any) as any)
-    .select("*")
-    .eq("approved", true)
-    .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
-  return { reviews: data ?? [] };
-});
-
-export const getAnnouncementsPublic = createServerFn({ method: "GET" }).handler(async () => {
-  const { data, error } = await (supabaseAdmin.from("announcements" as any) as any)
-    .select("*")
-    .eq("published", true)
-    .order("pinned", { ascending: false })
-    .order("created_at", { ascending: false });
-  if (error) throw new Error(error.message);
-  return { announcements: data ?? [] };
 });
 
 export const getAllPlugins = createServerFn({ method: "GET" }).handler(async () => {
@@ -96,4 +75,23 @@ export const getAllSlugs = createServerFn({ method: "GET" }).handler(async () =>
     supabaseAdmin.from("projects").select("slug,category").neq("status", "ARCHIVED"),
   ]);
   return { plugins: plugins.data ?? [], projects: projects.data ?? [] };
+});
+
+export const getAnnouncementsPublic = createServerFn({ method: "GET" }).handler(async () => {
+  const { data } = await (supabaseAdmin as any)
+    .from("announcements")
+    .select("*")
+    .eq("published", true)
+    .order("pinned", { ascending: false })
+    .order("created_at", { ascending: false });
+  return { announcements: data ?? [] };
+});
+
+export const getApprovedReviews = createServerFn({ method: "GET" }).handler(async () => {
+  const { data } = await (supabaseAdmin as any)
+    .from("reviews")
+    .select("*")
+    .eq("approved", true)
+    .order("created_at", { ascending: false });
+  return { reviews: data ?? [] };
 });

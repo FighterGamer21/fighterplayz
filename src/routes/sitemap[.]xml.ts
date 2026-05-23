@@ -2,7 +2,7 @@ import { createFileRoute } from "@tanstack/react-router";
 import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const BASE_URL = "";
-const STATIC = ["/", "/about", "/plugins", "/projects", "/servers", "/websites", "/services", "/hire", "/contact"];
+const STATIC = ["/", "/about", "/ecosystem", "/plugins", "/projects", "/servers", "/websites", "/services", "/hire", "/tickets", "/contact"];
 
 export const Route = createFileRoute("/sitemap.xml")({
   server: {

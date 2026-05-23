@@ -1,94 +1,156 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
-import { useState } from "react";
-import { useServerFn } from "@tanstack/react-start";
-import { toast } from "sonner";
+import { queryOptions, useSuspenseQuery, useQueryClient } from "@tanstack/react-query";
+import { useEffect, useState } from "react";
+import { motion } from "framer-motion";
 import { Star } from "lucide-react";
-import { SiteLayout, PageHero } from "@/components/site/SiteLayout";
-import { Button } from "@/components/ui/button";
+import { toast } from "sonner";
+import { useServerFn } from "@tanstack/react-start";
+import { SiteLayout } from "@/components/site/SiteLayout";
+import { getApprovedReviews } from "@/lib/public-data.functions";
+import { submitReview } from "@/lib/submit.functions";
+import { supabase } from "@/integrations/supabase/client";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
-import { supabase } from "@/integrations/supabase/client";
-import { getApprovedReviews } from "@/lib/public-data.functions";
-import { submitReview } from "@/lib/submit.functions";
 
-const opts = queryOptions({ queryKey: ["reviews"], queryFn: () => getApprovedReviews() });
+const opts = queryOptions({ queryKey: ["reviews-approved"], queryFn: () => getApprovedReviews() });
 
 export const Route = createFileRoute("/reviews")({
   head: () => ({
     meta: [
-      { title: "Reviews - FighterPlayz" },
-      { name: "description", content: "Registered user reviews for FighterPlayz services." },
+      { title: "Reviews — FighterPlayz" },
+      { name: "description", content: "Real reviews from clients and collaborators of FighterPlayz." },
     ],
   }),
   loader: ({ context }) => context.queryClient.ensureQueryData(opts),
-  component: ReviewsPage,
+  component: Page,
 });
 
-function ReviewsPage() {
-  const { data } = useSuspenseQuery(opts);
-  const submit = useServerFn(submitReview);
-  const [busy, setBusy] = useState(false);
-  const [rating, setRating] = useState(5);
+function StarRow({ value, onChange }: { value: number; onChange?: (n: number) => void }) {
+  return (
+    <div className="flex gap-1">
+      {[1, 2, 3, 4, 5].map((n) => (
+        <button
+          key={n}
+          type="button"
+          onClick={() => onChange?.(n)}
+          className={n <= value ? "text-amber-300" : "text-slate-600"}
+          aria-label={`${n} stars`}
+        >
+          <Star size={20} fill={n <= value ? "currentColor" : "none"} />
+        </button>
+      ))}
+    </div>
+  );
+}
 
-  async function onSubmit(event: React.FormEvent<HTMLFormElement>) {
-    event.preventDefault();
-    const { data: auth } = await supabase.auth.getUser();
-    if (!auth.user) {
-      toast.error("Login required", { description: "Please sign in before posting a review." });
-      return;
-    }
-    const form = new FormData(event.currentTarget);
-    setBusy(true);
+function Page() {
+  const { data } = useSuspenseQuery(opts);
+  const qc = useQueryClient();
+  const submit = useServerFn(submitReview);
+  const [user, setUser] = useState<any>(null);
+  const [rating, setRating] = useState(5);
+  const [submitting, setSubmitting] = useState(false);
+
+  useEffect(() => {
+    supabase.auth.getUser().then(({ data }) => setUser(data.user));
+    const { data: sub } = supabase.auth.onAuthStateChange((_e, s) => setUser(s?.user ?? null));
+    return () => sub.subscription.unsubscribe();
+  }, []);
+
+  async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    setSubmitting(true);
     try {
       await submit({
         data: {
-          name: String(form.get("name") || auth.user.email || "Registered user"),
-          role: String(form.get("role") || ""),
-          message: String(form.get("message") || ""),
+          name: String(f.get("name") || ""),
+          role: String(f.get("role") || ""),
+          message: String(f.get("message") || ""),
           rating,
         },
       });
-      toast.success("Review submitted", { description: "It will appear after admin approval." });
-      event.currentTarget.reset();
+      toast.success("Thanks! Your review is pending approval.");
+      (e.currentTarget as HTMLFormElement).reset();
       setRating(5);
-    } catch (error: any) {
-      toast.error(error?.message ?? "Could not submit review");
+      qc.invalidateQueries({ queryKey: ["reviews-approved"] });
+    } catch (err: any) {
+      toast.error(err?.message ?? "Could not submit");
     } finally {
-      setBusy(false);
+      setSubmitting(false);
     }
+  }
+
+  async function quickAuth(e: React.FormEvent<HTMLFormElement>) {
+    e.preventDefault();
+    const f = new FormData(e.currentTarget);
+    const email = String(f.get("email") || "");
+    const password = String(f.get("password") || "");
+    const mode = String(f.get("mode") || "signin");
+    const fn = mode === "signup" ? supabase.auth.signUp : supabase.auth.signInWithPassword;
+    const { error } = await fn.call(supabase.auth, { email, password });
+    if (error) toast.error(error.message);
+    else toast.success(mode === "signup" ? "Account created" : "Signed in");
   }
 
   return (
     <SiteLayout>
-      <PageHero eyebrow="Reviews" title="Registered user reviews" lead="Only logged-in users can post reviews. New reviews are held for admin approval." />
-      <section className="mx-auto grid max-w-6xl gap-6 px-5 pb-24 sm:px-8 lg:grid-cols-[0.9fr_1.1fr]">
-        <form onSubmit={onSubmit} className="glass grid h-fit gap-4 rounded-xl p-6">
-          <h2 className="text-2xl font-black text-white">Post a review</h2>
-          <div className="grid gap-1.5"><Label htmlFor="review-name">Name</Label><Input id="review-name" name="name" required maxLength={120} /></div>
-          <div className="grid gap-1.5"><Label htmlFor="review-role">Role</Label><Input id="review-role" name="role" maxLength={120} placeholder="Server owner, client, developer" /></div>
-          <div className="grid gap-2">
-            <Label>Rating</Label>
-            <div className="flex gap-1">
-              {[1, 2, 3, 4, 5].map((value) => (
-                <button key={value} type="button" onClick={() => setRating(value)} className="rounded-md p-1 text-[#28e7ff]" aria-label={`${value} stars`}>
-                  <Star size={22} fill={value <= rating ? "currentColor" : "none"} />
+      <section className="mx-auto max-w-5xl px-5 py-16 sm:px-8">
+        <p className="mb-3 text-xs font-bold uppercase tracking-[0.22em] text-[#28e7ff]">Community signal</p>
+        <h1 className="text-balance text-4xl font-black text-white sm:text-5xl">Reviews</h1>
+        <p className="mt-3 max-w-2xl text-slate-400">
+          Real reviews from clients and collaborators. Only signed-in users can post; reviews are visible after admin approval.
+        </p>
+
+        <div className="mt-10 grid gap-5 md:grid-cols-2">
+          {data.reviews.length === 0 ? (
+            <p className="text-slate-500">No approved reviews yet.</p>
+          ) : null}
+          {data.reviews.map((r: any, i: number) => (
+            <motion.blockquote
+              key={r.id}
+              initial={{ opacity: 0, y: 14 }}
+              whileInView={{ opacity: 1, y: 0 }}
+              viewport={{ once: true }}
+              transition={{ duration: 0.45, delay: i * 0.05 }}
+              className="glass rounded-xl p-6"
+            >
+              <StarRow value={r.rating} />
+              <p className="mt-4 text-lg leading-7 text-slate-200">&ldquo;{r.message}&rdquo;</p>
+              <footer className="mt-4 text-sm text-slate-400">
+                <strong className="text-white">{r.name}</strong>
+                {r.role ? ` — ${r.role}` : ""}
+              </footer>
+            </motion.blockquote>
+          ))}
+        </div>
+
+        <div className="glass mt-12 rounded-xl p-6">
+          <h2 className="text-2xl font-black text-white">Leave a review</h2>
+          {!user ? (
+            <form onSubmit={quickAuth} className="mt-4 grid gap-3 sm:grid-cols-[1fr_1fr_auto_auto]">
+              <Input name="email" type="email" placeholder="Email" required />
+              <Input name="password" type="password" placeholder="Password (8+)" minLength={8} required />
+              <button name="mode" value="signin" className="rounded-md bg-[#28e7ff] px-4 py-2 text-sm font-semibold text-[#05070d]">Sign in</button>
+              <button name="mode" value="signup" className="rounded-md border border-[#28e7ff]/30 px-4 py-2 text-sm font-semibold text-[#28e7ff]">Sign up</button>
+            </form>
+          ) : (
+            <form onSubmit={onSubmit} className="mt-4 grid gap-3">
+              <div className="grid gap-3 sm:grid-cols-2">
+                <div className="grid gap-1.5"><Label>Display name</Label><Input name="name" required maxLength={120} /></div>
+                <div className="grid gap-1.5"><Label>Role (optional)</Label><Input name="role" maxLength={120} placeholder="Server owner, dev…" /></div>
+              </div>
+              <div className="grid gap-1.5"><Label>Message</Label><Textarea name="message" required minLength={5} maxLength={2000} rows={4} /></div>
+              <div className="grid gap-1.5"><Label>Rating</Label><StarRow value={rating} onChange={setRating} /></div>
+              <div className="flex items-center gap-3">
+                <button disabled={submitting} className="rounded-md bg-[#28e7ff] px-4 py-2 text-sm font-semibold text-[#05070d] disabled:opacity-50">
+                  {submitting ? "Submitting…" : "Submit review"}
                 </button>
-              ))}
-            </div>
-          </div>
-          <div className="grid gap-1.5"><Label htmlFor="review-message">Review</Label><Textarea id="review-message" name="message" required rows={5} maxLength={1200} /></div>
-          <Button disabled={busy}>{busy ? "Submitting..." : "Submit review"}</Button>
-        </form>
-        <div className="grid gap-4">
-          {data.reviews.length ? data.reviews.map((review: any) => (
-            <article key={review.id} className="glass rounded-xl p-6">
-              <div className="mb-3 flex gap-1 text-[#28e7ff]">{[1, 2, 3, 4, 5].map((star) => <Star key={star} size={16} fill={star <= review.rating ? "currentColor" : "none"} />)}</div>
-              <p className="text-lg leading-8 text-slate-200">&quot;{review.message}&quot;</p>
-              <p className="mt-4 text-sm text-slate-400"><strong className="text-white">{review.name}</strong>{review.role ? ` - ${review.role}` : ""}</p>
-            </article>
-          )) : <p className="glass rounded-xl p-6 text-slate-400">No approved reviews yet.</p>}
+                <button type="button" onClick={() => supabase.auth.signOut()} className="text-xs text-slate-400 hover:text-slate-200">Sign out</button>
+              </div>
+            </form>
+          )}
         </div>
       </section>
     </SiteLayout>

@@ -3,11 +3,11 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { adminListResource, adminUpsertResource, adminDeleteResource } from "@/lib/admin.functions";
 
-type TableName = "plugins" | "projects" | "services" | "skills" | "testimonials" | "reviews" | "announcements" | "blog_posts";
+type TableName = "plugins" | "projects" | "services" | "skills" | "testimonials" | "blog_posts" | "announcements" | "reviews";
 const ARRAY_FIELDS = ["features","tech_stack","supported_versions","gallery","tags","dependencies"];
-const BOOL_FIELDS = ["featured","active","approved","published","currently_working"];
+const BOOL_FIELDS = ["featured","active","approved","published","pinned","currently_working"];
 const NUM_FIELDS = ["sort_order","level","rating","price"];
-const LONG_FIELDS = ["description","full_description","short_description","content","details","message","tagline"];
+const LONG_FIELDS = ["description","full_description","short_description","content","details","message","tagline","body"];
 
 export function CrudPanel({ table, title, fields }: { table: TableName; title: string; fields: string[] }) {
   const list = useServerFn(adminListResource);

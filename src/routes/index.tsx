@@ -1,11 +1,19 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
 import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
 import { ArrowRight, Code2, Cpu, DatabaseZap, Server, ShieldCheck } from "lucide-react";
-import { getHomeData } from "@/lib/public-data.functions";
+import { motion } from "framer-motion";
+import { getHomeData, getAnnouncementsPublic, getApprovedReviews } from "@/lib/public-data.functions";
 
 const homeQueryOptions = queryOptions({
   queryKey: ["home"],
-  queryFn: () => getHomeData(),
+  queryFn: async () => {
+    const [home, ann, rev] = await Promise.all([
+      getHomeData(),
+      getAnnouncementsPublic(),
+      getApprovedReviews(),
+    ]);
+    return { ...home, announcements: ann.announcements, reviews: rev.reviews };
+  },
 });
 
 export const Route = createFileRoute("/")({
@@ -27,12 +35,14 @@ const NAV = [
   ["Projects", "/projects"],
   ["Plugins", "/plugins"],
   ["Services", "/services"],
+  ["My Tickets", "/tickets"],
   ["Contact", "/contact"],
 ] as const;
 
 function Index() {
   const { data } = useSuspenseQuery(homeQueryOptions);
-  const { projects, plugins, services, skills, testimonials } = data;
+  const { projects, plugins, services, skills, announcements, reviews } = data;
+  const pinnedAnnouncements = announcements.filter((a: any) => a.pinned).slice(0, 3);
 
   return (
     <div>
@@ -70,6 +80,9 @@ function Index() {
                 </a>
                 <a href="/contact" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[#28e7ff]/30 px-5 py-2.5 text-sm font-semibold text-[#28e7ff] hover:bg-[#28e7ff]/10">
                   Contact
+                </a>
+                <a href="/tickets" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-white/10 px-5 py-2.5 text-sm font-semibold text-slate-200 hover:border-[#28e7ff]/40 hover:text-[#28e7ff]">
+                  Track ticket
                 </a>
               </div>
             </div>
@@ -166,19 +179,50 @@ function Index() {
           </div>
         </Section>
 
-        {/* TESTIMONIALS */}
-        {testimonials.length > 0 && (
-          <Section eyebrow="Testimonials" title="Signals from server owners and collaborators.">
-            <div className="grid gap-5 md:grid-cols-2">
-              {testimonials.map((t: any) => (
-                <blockquote key={t.id} className="glass rounded-xl p-6">
-                  <p className="text-lg leading-8 text-slate-200">&ldquo;{t.message}&rdquo;</p>
-                  <footer className="mt-5 text-sm text-slate-400">
-                    <strong className="text-white">{t.name}</strong> — {t.role}
-                  </footer>
-                </blockquote>
+        {/* PINNED ANNOUNCEMENTS */}
+        {pinnedAnnouncements.length > 0 && (
+          <Section eyebrow="Latest Updates" title="Pinned announcements from the FighterPlayz channel.">
+            <div className="grid gap-5 md:grid-cols-2 xl:grid-cols-3">
+              {pinnedAnnouncements.map((a: any, i: number) => (
+                <motion.article
+                  key={a.id}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.5, delay: i * 0.08 }}
+                  className="glass rounded-xl p-5"
+                >
+                  <span className="rounded-full border border-[#28e7ff]/30 bg-[#28e7ff]/10 px-3 py-1 text-xs font-bold uppercase text-[#28e7ff]">{a.type}</span>
+                  <h3 className="mt-3 text-xl font-black text-white">{a.title}</h3>
+                  <p className="mt-2 line-clamp-4 text-sm text-slate-400">{a.body}</p>
+                  <a href="/announcements" className="mt-4 inline-block text-xs font-semibold text-[#28e7ff]">Read all updates →</a>
+                </motion.article>
               ))}
             </div>
+          </Section>
+        )}
+
+        {/* REVIEWS */}
+        {reviews.length > 0 && (
+          <Section eyebrow="Reviews" title="What clients and collaborators are saying.">
+            <div className="grid gap-5 md:grid-cols-2">
+              {reviews.slice(0, 4).map((t: any, i: number) => (
+                <motion.blockquote
+                  key={t.id}
+                  initial={{ opacity: 0, y: 14 }}
+                  whileInView={{ opacity: 1, y: 0 }}
+                  viewport={{ once: true }}
+                  transition={{ duration: 0.45, delay: i * 0.05 }}
+                  className="glass rounded-xl p-6"
+                >
+                  <p className="text-lg leading-8 text-slate-200">&ldquo;{t.message}&rdquo;</p>
+                  <footer className="mt-5 text-sm text-slate-400">
+                    <strong className="text-white">{t.name}</strong>{t.role ? ` — ${t.role}` : ""}
+                  </footer>
+                </motion.blockquote>
+              ))}
+            </div>
+            <div className="mt-6"><a href="/reviews" className="text-sm font-semibold text-[#28e7ff]">Browse all reviews →</a></div>
           </Section>
         )}
 
@@ -188,8 +232,9 @@ function Index() {
             <p className="text-xs font-bold uppercase tracking-[0.24em] text-[#28e7ff]">Project Request</p>
             <h2 className="mx-auto mt-4 max-w-3xl text-4xl font-black text-white sm:text-5xl">Initialize a Project Request</h2>
             <p className="mx-auto mt-4 max-w-2xl text-slate-300">Start a plugin, optimization pass, web build, or full ecosystem layer with a clear brief.</p>
-            <div className="mt-8">
+            <div className="mt-8 flex flex-wrap justify-center gap-3">
               <a href="/contact" className="inline-flex min-h-11 items-center gap-2 rounded-lg bg-[#28e7ff] px-5 py-2.5 text-sm font-semibold text-[#05070d] shadow-glow hover:bg-white">Open request channel</a>
+              <a href="/tickets" className="inline-flex min-h-11 items-center gap-2 rounded-lg border border-[#28e7ff]/30 px-5 py-2.5 text-sm font-semibold text-[#28e7ff] hover:bg-[#28e7ff]/10">Track existing ticket</a>
             </div>
           </div>
         </section>

@@ -1,12 +1,11 @@
 import { createServerFn } from "@tanstack/react-start";
 import { z } from "zod";
 import { requireSupabaseAuth } from "@/integrations/supabase/auth-middleware";
-import { supabaseAdmin } from "@/integrations/supabase/client.server";
 
 const ADMIN_EMAIL = "fightergamerofficial1@gmail.com";
 
-async function assertAdmin(userId: string) {
-  const { data, error } = await supabaseAdmin
+async function assertAdmin(db: any, userId: string) {
+  const { data, error } = await db
     .from("user_roles")
     .select("role")
     .eq("user_id", userId)
@@ -28,25 +27,15 @@ export const bootstrapAdminRole = createServerFn({ method: "POST" })
     if (!email || email !== ADMIN_EMAIL.toLowerCase()) {
       return { granted: false, isAdmin: false };
     }
-    const { data: existing } = await supabaseAdmin
-      .from("user_roles")
-      .select("id")
-      .eq("user_id", context.userId)
-      .eq("role", "admin")
-      .maybeSingle();
-    if (!existing) {
-      const { error } = await supabaseAdmin
-        .from("user_roles")
-        .insert({ user_id: context.userId, role: "admin" });
-      if (error) throw new Error(error.message);
-    }
-    return { granted: !existing, isAdmin: true };
+    const { data, error } = await (context.supabase as any).rpc("bootstrap_admin_role");
+    if (error) throw new Error(error.message);
+    return { granted: !!data, isAdmin: true };
   });
 
 export const checkAdminRole = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    const { data } = await supabaseAdmin
+    const { data } = await (context.supabase as any)
       .from("user_roles")
       .select("role")
       .eq("user_id", context.userId)
@@ -58,14 +47,15 @@ export const checkAdminRole = createServerFn({ method: "GET" })
 export const getAdminStats = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context.userId);
+    const db = context.supabase as any;
+    await assertAdmin(db, context.userId);
     const [plugins, projects, services, tickets, messages, testimonials] = await Promise.all([
-      supabaseAdmin.from("plugins").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("projects").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("services").select("id", { count: "exact", head: true }),
-      supabaseAdmin.from("hire_tickets").select("id", { count: "exact", head: true }).eq("status", "NEW"),
-      supabaseAdmin.from("contact_messages").select("id", { count: "exact", head: true }).eq("status", "NEW"),
-      supabaseAdmin.from("testimonials").select("id", { count: "exact", head: true }),
+      db.from("plugins").select("id", { count: "exact", head: true }),
+      db.from("projects").select("id", { count: "exact", head: true }),
+      db.from("services").select("id", { count: "exact", head: true }),
+      db.from("hire_tickets").select("id", { count: "exact", head: true }).eq("status", "NEW"),
+      db.from("contact_messages").select("id", { count: "exact", head: true }).eq("status", "NEW"),
+      db.from("testimonials").select("id", { count: "exact", head: true }),
     ]);
     return {
       plugins: plugins.count ?? 0,
@@ -80,13 +70,19 @@ export const getAdminStats = createServerFn({ method: "GET" })
 export const adminListTickets = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context.userId);
-    const { data, error } = await supabaseAdmin
+    const db = context.supabase as any;
+    await assertAdmin(db, context.userId);
+    const { data, error } = await db
       .from("hire_tickets")
       .select("*")
       .order("created_at", { ascending: false });
     if (error) throw new Error(error.message);
-    return { tickets: data ?? [] };
+    const ticketIds = (data ?? []).map((ticket: any) => ticket.id);
+    const { data: messages, error: msgError } = ticketIds.length
+      ? await db.from("ticket_messages").select("*").in("ticket_id", ticketIds).order("created_at", { ascending: true })
+      : { data: [], error: null };
+    if (msgError) throw new Error(msgError.message);
+    return { tickets: data ?? [], messages: messages ?? [] };
   });
 
 export const adminUpdateTicket = createServerFn({ method: "POST" })
@@ -101,8 +97,9 @@ export const adminUpdateTicket = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.userId);
-    const { error } = await supabaseAdmin
+    const db = context.supabase as any;
+    await assertAdmin(db, context.userId);
+    const { error } = await db
       .from("hire_tickets")
       .update({ status: data.status, admin_notes: data.admin_notes ?? null })
       .eq("id", data.id);
@@ -110,11 +107,35 @@ export const adminUpdateTicket = createServerFn({ method: "POST" })
     return { ok: true };
   });
 
+export const adminReplyTicket = createServerFn({ method: "POST" })
+  .middleware([requireSupabaseAuth])
+  .inputValidator((input) =>
+    z
+      .object({
+        ticket_id: z.string().uuid(),
+        message: z.string().trim().min(1).max(2000),
+      })
+      .parse(input),
+  )
+  .handler(async ({ context, data }) => {
+    const db = context.supabase as any;
+    await assertAdmin(db, context.userId);
+    const { error } = await db.from("ticket_messages").insert({
+      ticket_id: data.ticket_id,
+      sender_type: "admin",
+      sender_name: "FighterPlayz",
+      message: data.message,
+    });
+    if (error) throw new Error(error.message);
+    return { ok: true };
+  });
+
 export const adminListMessages = createServerFn({ method: "GET" })
   .middleware([requireSupabaseAuth])
   .handler(async ({ context }) => {
-    await assertAdmin(context.userId);
-    const { data, error } = await supabaseAdmin
+    const db = context.supabase as any;
+    await assertAdmin(db, context.userId);
+    const { data, error } = await db
       .from("contact_messages")
       .select("*")
       .order("created_at", { ascending: false });
@@ -128,9 +149,9 @@ const ALLOWED_TABLES = [
   "services",
   "skills",
   "testimonials",
-  "reviews",
-  "announcements",
   "blog_posts",
+  "announcements",
+  "reviews",
 ] as const;
 type AllowedTable = (typeof ALLOWED_TABLES)[number];
 
@@ -140,9 +161,10 @@ export const adminListResource = createServerFn({ method: "GET" })
     z.object({ table: z.enum(ALLOWED_TABLES) }).parse(input),
   )
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.userId);
-    const { data: rows, error } = await supabaseAdmin
-      .from(data.table as AllowedTable)
+    const db = context.supabase as any;
+    await assertAdmin(db, context.userId);
+    const { data: rows, error } = await db
+      .from(data.table)
       .select("*")
       .order("id");
     if (error) throw new Error(error.message);
@@ -160,8 +182,9 @@ export const adminUpsertResource = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.userId);
-    const { error } = await (supabaseAdmin.from(data.table as AllowedTable) as any).upsert(data.row);
+    const db = context.supabase as any;
+    await assertAdmin(db, context.userId);
+    const { error } = await db.from(data.table).upsert(data.row);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
@@ -177,8 +200,9 @@ export const adminDeleteResource = createServerFn({ method: "POST" })
       .parse(input),
   )
   .handler(async ({ context, data }) => {
-    await assertAdmin(context.userId);
-    const { error } = await supabaseAdmin.from(data.table as AllowedTable).delete().eq("id", data.id);
+    const db = context.supabase as any;
+    await assertAdmin(db, context.userId);
+    const { error } = await db.from(data.table).delete().eq("id", data.id);
     if (error) throw new Error(error.message);
     return { ok: true };
   });
