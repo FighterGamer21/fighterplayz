@@ -132,17 +132,15 @@ Statuses: `NEW | REVIEWING | ACCEPTED | IN_PROGRESS | COMPLETED | REJECTED`.
 ```json
 {
   "buildCommand": "npm run build",
-  "installCommand": "npm install --legacy-peer-deps",
-  "framework": "vite",
-  "outputDirectory": "dist/client"
+  "installCommand": "npm install --legacy-peer-deps"
 }
 ```
 
 In the Vercel project settings:
-- Framework Preset: **Vite**
+- Framework Preset: let Vercel auto-detect TanStack Start/Nitro
 - Install Command: `npm install --legacy-peer-deps`
 - Build Command: `npm run build`
-- Output Directory: `dist/client`
+- Output Directory: leave empty/default
 - Environment Variables (Production + Preview): set all five env vars listed above.
 
 ## Commands
