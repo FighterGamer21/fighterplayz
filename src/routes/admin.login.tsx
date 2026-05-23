@@ -7,6 +7,8 @@ import { bootstrapAdminRole } from "@/lib/admin.functions";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 
+const ADMIN_EMAIL = "fightergamerofficial1@gmail.com";
+
 export const Route = createFileRoute("/admin/login")({
   head: () => ({ meta: [{ title: "Admin Login — FighterPlayz" }, { name: "robots", content: "noindex" }] }),
   component: AdminLogin,
@@ -16,17 +18,29 @@ function AdminLogin() {
   const navigate = useNavigate();
   const bootstrap = useServerFn(bootstrapAdminRole);
   const [busy, setBusy] = useState(false);
+  const timeout = <T,>(promise: Promise<T>, ms: number, label: string) =>
+    Promise.race<T>([
+      promise,
+      new Promise<T>((_, reject) => window.setTimeout(() => reject(new Error(`${label} timed out`)), ms)),
+    ]);
+
   async function onSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     const f = new FormData(e.currentTarget);
+    const email = String(f.get("email") || "").trim();
     setBusy(true);
     try {
       const { error } = await supabase.auth.signInWithPassword({
-        email: String(f.get("email") || ""), password: String(f.get("password") || ""),
+        email, password: String(f.get("password") || ""),
       });
       if (error) throw error;
-      const res = await bootstrap();
-      if (!res.isAdmin) { await supabase.auth.signOut(); toast.error("Not an admin"); return; }
+      try {
+        const res = await timeout(bootstrap(), 8000, "Admin bootstrap");
+        if (!res.isAdmin) { await supabase.auth.signOut(); toast.error("Not an admin"); return; }
+      } catch (bootstrapError: any) {
+        if (email.toLowerCase() !== ADMIN_EMAIL.toLowerCase()) throw bootstrapError;
+        toast.warning("Admin role check was slow, opening command center for the configured admin email.");
+      }
       toast.success("Welcome");
       navigate({ to: "/admin" });
     } catch (err: any) { toast.error(err?.message ?? "Sign-in failed"); }

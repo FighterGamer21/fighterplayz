@@ -1,9 +1,11 @@
-import { createFileRoute, Link } from "@tanstack/react-router";
+import { createFileRoute } from "@tanstack/react-router";
 import { useQuery } from "@tanstack/react-query";
-import { ArrowRight, Code2, Cpu, DatabaseZap, Server, ShieldCheck } from "lucide-react";
+import { ArrowRight, CheckCircle2, Code2, DatabaseZap, Server } from "lucide-react";
 import { motion } from "framer-motion";
 import { getHomeData, getAnnouncementsPublic, getApprovedReviews } from "@/lib/public-data.functions";
 import { SEED_PLUGINS, SEED_PROJECTS, SEED_SERVICES, SEED_SKILLS } from "@/lib/seed-data";
+import { Navbar } from "@/components/site/Navbar";
+import { Footer } from "@/components/site/Footer";
 
 const withIds = (rows: any[]) => rows.map((row, index) => ({ id: row.slug ?? row.name ?? row.title ?? `seed-${index}`, ...row }));
 
@@ -43,15 +45,6 @@ export const Route = createFileRoute("/")({
   component: Index,
 });
 
-const NAV = [
-  ["Ecosystem", "/ecosystem"],
-  ["Projects", "/projects"],
-  ["Plugins", "/plugins"],
-  ["Services", "/services"],
-  ["My Tickets", "/tickets"],
-  ["Contact", "/contact"],
-] as const;
-
 function Index() {
   const { data } = useQuery({
     queryKey: ["home"],
@@ -64,21 +57,7 @@ function Index() {
 
   return (
     <div>
-      <header className="sticky top-0 z-40 border-b border-white/10 bg-[#05070d]/70 backdrop-blur-xl">
-        <div className="mx-auto flex h-16 max-w-7xl items-center justify-between px-5 sm:px-8">
-          <Link to="/" className="flex items-center gap-3 font-black tracking-tight text-white">
-            <span className="grid size-10 place-items-center rounded-lg border border-[#28e7ff]/30 bg-[#28e7ff]/10 text-[#28e7ff] shadow-glow">
-              <Cpu size={20} />
-            </span>
-            <span>FighterPlayz</span>
-          </Link>
-          <nav className="hidden items-center gap-6 lg:flex">
-            {NAV.map(([label, href]) => (
-              <a key={href} href={href} className="text-sm font-medium text-slate-300 transition hover:text-[#28e7ff]">{label}</a>
-            ))}
-          </nav>
-        </div>
-      </header>
+      <Navbar />
 
       <main>
         {/* HERO */}
@@ -189,7 +168,12 @@ function Index() {
                 <h3 className="text-xl font-black text-white">{svc.title}</h3>
                 <p className="mt-2 text-sm leading-6 text-slate-400">{svc.description}</p>
                 <ul className="mt-4 space-y-2 text-sm text-slate-300">
-                  {(svc.features ?? []).slice(0, 3).map((f: string) => <li key={f}>— {f}</li>)}
+                  {(svc.features ?? []).slice(0, 3).map((f: string) => (
+                    <li key={f} className="flex items-start gap-2">
+                      <CheckCircle2 className="mt-0.5 shrink-0 text-[#28e7ff]" size={16} />
+                      <span>{f}</span>
+                    </li>
+                  ))}
                 </ul>
                 {svc.starting_price ? <p className="mt-4 text-sm font-bold text-[#28e7ff]">{svc.starting_price}</p> : null}
               </div>
@@ -258,15 +242,7 @@ function Index() {
         </section>
       </main>
 
-      <footer className="border-t border-white/10 bg-[#090d18]/70">
-        <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-5 py-8 sm:px-8">
-          <div className="flex items-center gap-2 font-black text-white">
-            <ShieldCheck className="text-[#28e7ff]" size={20} />
-            FighterPlayz Ecosystem
-          </div>
-          <p className="text-xs text-slate-500">@fightergamerofficial1</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 }
