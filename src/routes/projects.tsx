@@ -1,9 +1,21 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { SiteLayout, PageHero } from "@/components/site/SiteLayout";
 import { getProjectsByCategory } from "@/lib/public-data.functions";
+import { SEED_PROJECTS } from "@/lib/seed-data";
 
-const opts = queryOptions({ queryKey: ["projects-all"], queryFn: () => getProjectsByCategory({ data: {} }) });
+const PROJECTS_FALLBACK = {
+  projects: SEED_PROJECTS.map((project, index) => ({ id: project.slug ?? `project-${index}`, ...project })),
+};
+
+async function loadProjects() {
+  try {
+    return await getProjectsByCategory({ data: {} });
+  } catch (error) {
+    console.error("[projects] using fallback content", error);
+    return PROJECTS_FALLBACK;
+  }
+}
 
 export const Route = createFileRoute("/projects")({
   head: () => ({
@@ -15,12 +27,16 @@ export const Route = createFileRoute("/projects")({
     ],
     links: [{ rel: "canonical", href: "/projects" }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(opts),
   component: ProjectsPage,
 });
 
 function ProjectsPage() {
-  const { data } = useSuspenseQuery(opts);
+  const { data } = useQuery({
+    queryKey: ["projects-all"],
+    queryFn: loadProjects,
+    initialData: PROJECTS_FALLBACK,
+    retry: false,
+  });
   return (
     <SiteLayout>
       <PageHero eyebrow="Projects" title="Servers, websites and systems shipped" />

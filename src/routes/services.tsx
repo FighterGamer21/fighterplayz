@@ -1,10 +1,22 @@
 import { createFileRoute } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { SiteLayout, PageHero } from "@/components/site/SiteLayout";
 import { HireDialog } from "@/components/site/HireDialog";
 import { getServicesPublic } from "@/lib/public-data.functions";
+import { SEED_SERVICES } from "@/lib/seed-data";
 
-const opts = queryOptions({ queryKey: ["services"], queryFn: () => getServicesPublic() });
+const SERVICES_FALLBACK = {
+  services: SEED_SERVICES.map((service, index) => ({ id: service.slug ?? `service-${index}`, ...service })),
+};
+
+async function loadServices() {
+  try {
+    return await getServicesPublic();
+  } catch (error) {
+    console.error("[services] using fallback content", error);
+    return SERVICES_FALLBACK;
+  }
+}
 
 export const Route = createFileRoute("/services")({
   head: () => ({
@@ -16,12 +28,16 @@ export const Route = createFileRoute("/services")({
     ],
     links: [{ rel: "canonical", href: "/services" }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(opts),
   component: ServicesPage,
 });
 
 function ServicesPage() {
-  const { data } = useSuspenseQuery(opts);
+  const { data } = useQuery({
+    queryKey: ["services"],
+    queryFn: loadServices,
+    initialData: SERVICES_FALLBACK,
+    retry: false,
+  });
   return (
     <SiteLayout>
       <PageHero eyebrow="Services" title="What I build, for who needs it" />

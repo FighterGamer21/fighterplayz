@@ -1,9 +1,23 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { SiteLayout, PageHero } from "@/components/site/SiteLayout";
 import { getAllPlugins } from "@/lib/public-data.functions";
+import { SEED_PLUGINS } from "@/lib/seed-data";
 
-const opts = queryOptions({ queryKey: ["plugins-all"], queryFn: () => getAllPlugins() });
+const PLUGINS_FALLBACK = {
+  plugins: SEED_PLUGINS
+    .filter((plugin) => plugin.status !== "ARCHIVED")
+    .map((plugin, index) => ({ id: plugin.slug ?? `plugin-${index}`, ...plugin })),
+};
+
+async function loadPlugins() {
+  try {
+    return await getAllPlugins();
+  } catch (error) {
+    console.error("[plugins] using fallback content", error);
+    return PLUGINS_FALLBACK;
+  }
+}
 
 export const Route = createFileRoute("/plugins")({
   head: () => ({
@@ -15,12 +29,16 @@ export const Route = createFileRoute("/plugins")({
     ],
     links: [{ rel: "canonical", href: "/plugins" }],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(opts),
   component: PluginsPage,
 });
 
 function PluginsPage() {
-  const { data } = useSuspenseQuery(opts);
+  const { data } = useQuery({
+    queryKey: ["plugins-all"],
+    queryFn: loadPlugins,
+    initialData: PLUGINS_FALLBACK,
+    retry: false,
+  });
   return (
     <SiteLayout>
       <PageHero eyebrow="Plugins" title="Minecraft plugins built for serious networks" lead="Every plugin is configurable, permission-aware, and tuned for Paper performance." />

@@ -1,20 +1,34 @@
 import { createFileRoute, Link } from "@tanstack/react-router";
-import { queryOptions, useSuspenseQuery } from "@tanstack/react-query";
+import { useQuery } from "@tanstack/react-query";
 import { ArrowRight, Code2, Cpu, DatabaseZap, Server, ShieldCheck } from "lucide-react";
 import { motion } from "framer-motion";
 import { getHomeData, getAnnouncementsPublic, getApprovedReviews } from "@/lib/public-data.functions";
+import { SEED_PLUGINS, SEED_PROJECTS, SEED_SERVICES, SEED_SKILLS } from "@/lib/seed-data";
 
-const homeQueryOptions = queryOptions({
-  queryKey: ["home"],
-  queryFn: async () => {
+const withIds = (rows: any[]) => rows.map((row, index) => ({ id: row.slug ?? row.name ?? row.title ?? `seed-${index}`, ...row }));
+
+const HOME_FALLBACK = {
+  projects: withIds(SEED_PROJECTS).filter((p: any) => p.featured).slice(0, 6),
+  plugins: withIds(SEED_PLUGINS).filter((p: any) => p.featured && p.status !== "ARCHIVED").slice(0, 6),
+  services: withIds(SEED_SERVICES),
+  skills: withIds(SEED_SKILLS),
+  announcements: [],
+  reviews: [],
+};
+
+async function loadHomeData() {
+  try {
     const [home, ann, rev] = await Promise.all([
       getHomeData(),
       getAnnouncementsPublic(),
       getApprovedReviews(),
     ]);
     return { ...home, announcements: ann.announcements, reviews: rev.reviews };
-  },
-});
+  } catch (error) {
+    console.error("[home] using fallback content", error);
+    return HOME_FALLBACK;
+  }
+}
 
 export const Route = createFileRoute("/")({
   head: () => ({
@@ -26,7 +40,6 @@ export const Route = createFileRoute("/")({
       { property: "og:image", content: "/og/fighterplayz-og.svg" },
     ],
   }),
-  loader: ({ context }) => context.queryClient.ensureQueryData(homeQueryOptions),
   component: Index,
 });
 
@@ -40,7 +53,12 @@ const NAV = [
 ] as const;
 
 function Index() {
-  const { data } = useSuspenseQuery(homeQueryOptions);
+  const { data } = useQuery({
+    queryKey: ["home"],
+    queryFn: loadHomeData,
+    initialData: HOME_FALLBACK,
+    retry: false,
+  });
   const { projects, plugins, services, skills, announcements, reviews } = data;
   const pinnedAnnouncements = announcements.filter((a: any) => a.pinned).slice(0, 3);
 
