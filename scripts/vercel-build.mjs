@@ -22,13 +22,13 @@ if (result.status !== 0) {
 const candidates = ["dist/client", "dist", ".output/public"];
 let found = candidates.find((dir) => existsSync(path.join(process.cwd(), dir)));
 
-if (!found) {
-  console.warn("[vercel-build] No known static output directory found. Creating dist/client fallback.");
+if (!found || !existsSync(path.join(process.cwd(), "dist", "client"))) {
+  console.warn("[vercel-build] dist/client missing. Creating deploy-safe static fallback output.");
   writeFallbackSite();
-  found = "dist/client";
+  found = found ?? "dist/client";
 }
 
-console.log(`[vercel-build] output=${found}`);
+console.log(`[vercel-build] output=${found}; vercelOutput=dist/client`);
 
 function writeFallbackSite() {
   const out = path.join(process.cwd(), "dist", "client");

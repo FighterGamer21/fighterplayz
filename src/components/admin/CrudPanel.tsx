@@ -3,7 +3,7 @@ import { useServerFn } from "@tanstack/react-start";
 import { toast } from "sonner";
 import { adminListResource, adminUpsertResource, adminDeleteResource } from "@/lib/admin.functions";
 
-type TableName = "plugins" | "projects" | "services" | "skills" | "testimonials" | "blog_posts";
+type TableName = "plugins" | "projects" | "services" | "skills" | "testimonials" | "reviews" | "announcements" | "blog_posts";
 const ARRAY_FIELDS = ["features","tech_stack","supported_versions","gallery","tags","dependencies"];
 const BOOL_FIELDS = ["featured","active","approved","published","currently_working"];
 const NUM_FIELDS = ["sort_order","level","rating","price"];

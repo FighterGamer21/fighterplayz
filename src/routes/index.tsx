@@ -32,7 +32,7 @@ const NAV = [
 
 function Index() {
   const { data } = useSuspenseQuery(homeQueryOptions);
-  const { projects, plugins, services, skills, testimonials, announcements } = data as any;
+  const { projects, plugins, services, skills, testimonials } = data;
 
   return (
     <div>
@@ -166,27 +166,9 @@ function Index() {
           </div>
         </Section>
 
-        {/* ANNOUNCEMENTS */}
-        {announcements?.length > 0 && (
-          <Section eyebrow="Updates" title="Latest announcements from the ecosystem.">
-            <div className="grid gap-4 md:grid-cols-2">
-              {announcements.map((item: any) => (
-                <article key={item.id} className="glass rounded-xl p-6">
-                  <div className="mb-3 flex gap-2">
-                    <span className="rounded-full bg-[#28e7ff]/10 px-3 py-1 text-xs font-bold text-[#28e7ff]">{item.type}</span>
-                    {item.pinned ? <span className="rounded-full bg-violet-500/10 px-3 py-1 text-xs font-bold text-violet-200">PINNED</span> : null}
-                  </div>
-                  <h3 className="text-xl font-black text-white">{item.title}</h3>
-                  <p className="mt-2 line-clamp-3 text-sm leading-6 text-slate-400">{item.body}</p>
-                </article>
-              ))}
-            </div>
-          </Section>
-        )}
-
-        {/* REVIEWS */}
+        {/* TESTIMONIALS */}
         {testimonials.length > 0 && (
-          <Section eyebrow="Reviews" title="Approved reviews from registered users.">
+          <Section eyebrow="Testimonials" title="Signals from server owners and collaborators.">
             <div className="grid gap-5 md:grid-cols-2">
               {testimonials.map((t: any) => (
                 <blockquote key={t.id} className="glass rounded-xl p-6">
